@@ -1,9 +1,13 @@
 # trilium-plugin
 
+[![requires trilium-mcp sidecar](https://img.shields.io/badge/requires-trilium--mcp_sidecar_running-critical)](https://github.com/Marceltov/trilium-mcp)
+
 A [Claude Code](https://code.claude.com) plugin for [Trilium](https://triliumnotes.org): Skills for working with your notes, plus the MCP connection to a running [trilium-mcp](https://github.com/Marceltov/trilium-mcp) server.
 
-This repo does **not** run or host the MCP server. `trilium-mcp` runs as a container sidecar next to your Trilium instance (see that repo's Quick Start). 
-This plugin only points Claude Code at wherever you've already deployed it, and adds skills that use its tools.
+> [!IMPORTANT]
+> This plugin does **not** run, host, or bundle the MCP server. It's a thin client: it only works if you already have [`trilium-mcp`](https://github.com/Marceltov/trilium-mcp) deployed and reachable as a **container sidecar** next to your Trilium instance (see that repo's Quick Start). Installing this plugin alone gets you nothing — without a running `trilium-mcp` sidecar and valid credentials, every tool call fails.
+
+This plugin only points Claude Code at wherever you've already deployed `trilium-mcp`, and adds skills that use its tools.
 
 ## Install
 

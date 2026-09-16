@@ -16,6 +16,7 @@ skills/
 - **`search-notes`** — general-purpose note search by title, content, or attributes.
 - **`manage-note-attributes`** — add, update, or remove labels and relations on a note.
 - **`journal-note`** — get or append to the day/week/month/year journal note for a date.
+- **`export-note-subtree`** — export a note and its subtree as readable markdown or HTML.
 - **`create-note-from-template`** — creates a new note from an existing template note (`~template` relation) and prompts for the template's promoted-attribute values.
 - **`apply-template-to-note`** — retroactively attaches an existing note to a template. Mutates the target note's content and children, so it confirms with the user before writing.
 - **`find-template-instances`** — searches for notes derived from a given template, optionally filtered by promoted-attribute values.

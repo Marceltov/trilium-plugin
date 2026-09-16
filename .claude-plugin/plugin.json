@@ -1,0 +1,17 @@
+{
+  "name": "trilium-plugin",
+  "version": "0.1.0",
+  "description": "Claude Code plugin for Trilium: skills plus the MCP connection to a running trilium-mcp server.",
+  "author": {
+    "name": "Marcel Bruckner"
+  },
+  "homepage": "https://github.com/MarcelBruckner/trilium-plugin",
+  "repository": "https://github.com/MarcelBruckner/trilium-plugin",
+  "license": "MIT",
+  "keywords": [
+    "trilium",
+    "notes",
+    "mcp",
+    "skills"
+  ]
+}

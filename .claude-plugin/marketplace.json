@@ -1,0 +1,10 @@
+{
+  "name": "trilium-plugin",
+  "plugins": [
+    {
+      "name": "trilium-plugin",
+      "source": "./",
+      "description": "Skills plus the MCP connection to a running trilium-mcp server."
+    }
+  ]
+}

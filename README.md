@@ -44,7 +44,7 @@ Or add them to the `env` block of your Claude Code installation's `settings.json
 
 ## Skills
 
-See [`skills/`](skills/) — `setup-trilium-credentials` configures the connection; `create-note`, `delete-note`, and `move-note` cover basic note management; `create-note-from-template`, `apply-template-to-note`, and `find-template-instances` work with Trilium's template feature.
+See [`skills/`](skills/) — `setup-trilium-credentials` configures the connection; `create-note`, `delete-note`, `move-note`, and `rename-note` cover basic note management; `create-note-from-template`, `apply-template-to-note`, and `find-template-instances` work with Trilium's template feature.
 
 ## License
 

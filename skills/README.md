@@ -12,6 +12,7 @@ skills/
 - **`create-note`** — creates a plain new note (title, content, type, parent), no template involved.
 - **`delete-note`** — deletes a note and its entire subtree of children, after confirming with the user.
 - **`move-note`** — moves a note to a different parent (creates a new branch, deletes the old one).
+- **`rename-note`** — changes a note's title.
 - **`create-note-from-template`** — creates a new note from an existing template note (`~template` relation) and prompts for the template's promoted-attribute values.
 - **`apply-template-to-note`** — retroactively attaches an existing note to a template. Mutates the target note's content and children, so it confirms with the user before writing.
 - **`find-template-instances`** — searches for notes derived from a given template, optionally filtered by promoted-attribute values.

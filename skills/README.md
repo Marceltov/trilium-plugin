@@ -14,6 +14,6 @@ No skills yet — this is a scaffold. See the
 walkthrough.
 
 Skills here should call the MCP tools exposed by
-[trilium-mcp](https://github.com/MarcelBruckner/trilium-mcp) (`createNote`,
+[trilium-mcp](https://github.com/Marceltov/trilium-mcp) (`createNote`,
 `searchNotes`, `getNoteById`, `exportNoteSubtree`, …) rather than talking to
 the Trilium ETAPI directly.

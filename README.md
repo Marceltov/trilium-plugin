@@ -2,7 +2,7 @@
 
 A [Claude Code](https://code.claude.com) plugin for [Trilium](https://triliumnotes.org):
 skills for working with your notes, plus the MCP connection to a running
-[trilium-mcp](https://github.com/MarcelBruckner/trilium-mcp) server.
+[trilium-mcp](https://github.com/Marceltov/trilium-mcp) server.
 
 This repo does **not** run or host the MCP server. `trilium-mcp` runs as a
 container sidecar next to your Trilium instance (see that repo's Quick Start).
@@ -12,7 +12,7 @@ and adds skills that use its tools.
 ## Install
 
 ```
-/plugin marketplace add MarcelBruckner/trilium-plugin
+/plugin marketplace add Marceltov/trilium-plugin
 /plugin install trilium-plugin
 ```
 
@@ -20,7 +20,7 @@ and adds skills that use its tools.
 
 Set these two environment variables before starting Claude Code, matching
 the host and token from your `trilium-mcp` deployment
-(see [Connecting a client](https://github.com/MarcelBruckner/trilium-mcp#connecting-a-client)):
+(see [Connecting a client](https://github.com/Marceltov/trilium-mcp#connecting-a-client)):
 
 ```bash
 export TRILIUM_MCP_URL="https://your-host/mcp"

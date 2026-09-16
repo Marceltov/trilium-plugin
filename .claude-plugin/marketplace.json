@@ -5,7 +5,7 @@
   },
   "plugins": [
     {
-      "name": "trilium-plugin",
+      "name": "trilium",
       "source": "./",
       "description": "Skills plus the MCP connection to a running trilium-mcp server."
     }

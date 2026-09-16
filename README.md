@@ -9,7 +9,7 @@ This plugin only points Claude Code at wherever you've already deployed it, and 
 
 ```
 /plugin marketplace add Marceltov/trilium-plugin
-/plugin install trilium-plugin
+/plugin install trilium
 ```
 
 ## Configure the connection

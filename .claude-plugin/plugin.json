@@ -1,5 +1,5 @@
 {
-  "name": "trilium-plugin",
+  "name": "trilium",
   "version": "0.1.0",
   "description": "Claude Code plugin for Trilium: skills plus the MCP connection to a running trilium-mcp server.",
   "author": {

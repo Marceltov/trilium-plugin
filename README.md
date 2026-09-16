@@ -25,6 +25,17 @@ export TRILIUM_MCP_URL="https://your-host/mcp"
 export TRILIUM_ETAPI_TOKEN="your-etapi-token"
 ```
 
+Or add them to the `env` block of your Claude Code installation's `settings.json` (defaults to `~/.claude/settings.json`, or `$CLAUDE_CONFIG_DIR/settings.json` if that's set) — this is exactly what the automatic setup above does for you:
+
+```json
+{
+  "env": {
+    "TRILIUM_MCP_URL": "https://your-host/mcp",
+    "TRILIUM_ETAPI_TOKEN": "your-etapi-token"
+  }
+}
+```
+
 `TRILIUM_MCP_URL` defaults to `http://localhost:8081/mcp` if unset, matching the local dev stack in `trilium-mcp`. `TRILIUM_ETAPI_TOKEN` has no default — create one from Trilium's *Options → ETAPI* screen.
 
 ## Skills

@@ -44,7 +44,7 @@ Or add them to the `env` block of your Claude Code installation's `settings.json
 
 ## Skills
 
-See [`skills/`](skills/) — `setup-trilium-credentials` configures the connection; otherwise this is a scaffold.
+See [`skills/`](skills/) — `setup-trilium-credentials` configures the connection; `create-note`, `create-note-from-template`, `apply-template-to-note`, and `find-template-instances` work with notes and Trilium's template feature.
 
 ## License
 

@@ -1,5 +1,8 @@
 {
   "name": "trilium-plugin",
+  "owner": {
+    "name": "Marcel Bruckner (Marceltov)"
+  },
   "plugins": [
     {
       "name": "trilium-plugin",

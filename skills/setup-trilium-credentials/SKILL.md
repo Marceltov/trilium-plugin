@@ -37,7 +37,23 @@ have multiple installs and want each configured separately.
 
 ## Steps
 
-1. **Ask for the values**, one at a time (plain question or `AskUserQuestion`
+1. **Check whether it's already configured before asking anything.** Two
+   independent signals both indicate the credentials are already in place:
+   - The `mcp__trilium__*` tools are already listed as available in *this*
+     session (see the system-reminder of connected MCP tools) — this proves
+     the token in use right now is valid, so setup is already done.
+   - Resolve the settings file path (command below) and read it: if
+     `env.TRILIUM_ETAPI_TOKEN` is already a non-empty string, credentials
+     were persisted by a previous run of this skill.
+
+   If either signal is true, **stop here** — do not ask for values, do not
+   overwrite the existing token. Just report that Trilium credentials are
+   already configured (naming the resolved settings.json path but never the
+   token value) and finish.
+
+   Only continue to step 2 if neither signal is true.
+
+2. **Ask for the values**, one at a time (plain question or `AskUserQuestion`
    if available):
    - `TRILIUM_MCP_URL` — the URL of their running `trilium-mcp` deployment.
      Mention the default (`http://localhost:8081/mcp`) and that they can skip
@@ -46,11 +62,12 @@ have multiple installs and want each configured separately.
      *Options → ETAPI* screen. Required, no default.
    - Never print the token back in a confirmation message or log it.
 
-2. **Resolve the settings file path** with the command above, then read it.
+3. **Resolve the settings file path** with the command above, then read it
+   (you may have already read it in step 1 — reuse that read, don't re-read).
    If it doesn't exist, start from `{}`. It's strict JSON (no comments, no
    trailing commas) — parse it properly, don't regex-edit it.
 
-3. **Merge into the `env` object**, preserving every other key already in the
+4. **Merge into the `env` object**, preserving every other key already in the
    file and every other key already in `env`:
    ```json
    {
@@ -63,13 +80,13 @@ have multiple installs and want each configured separately.
    Only write `TRILIUM_MCP_URL` if the user gave a non-default value, or if a
    value already exists there — no need to pin the default explicitly.
 
-4. **Write the file back** as valid JSON.
+5. **Write the file back** as valid JSON.
 
-5. **Tell the user to restart Claude Code** (or start a new session). The
+6. **Tell the user to restart Claude Code** (or start a new session). The
    `.mcp.json` `${VAR}` expansion happens once at startup, so this change
    will not take effect in the current session.
 
-6. **If working inside the `trilium-plugin` repo itself** (or any project
+7. **If working inside the `trilium-plugin` repo itself** (or any project
    where the server previously failed to connect), check that project's
    `.claude/settings.local.json` for a `disabledMcpjsonServers` array
    containing `"trilium"` — Claude Code disables a server there after a

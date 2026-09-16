@@ -1,13 +1,27 @@
-# trilium-plugin
+<h1 align="center"><a href="https://github.com/Marceltov/trilium-plugin">trilium-plugin</a></h1>
 
-[![requires trilium-mcp sidecar](https://img.shields.io/badge/requires-trilium--mcp_sidecar_running-critical)](https://github.com/Marceltov/trilium-mcp)
+<p align="center">
+  <a href="https://github.com/Marceltov/trilium-mcp">
+    <img alt="requires trilium-mcp sidecar" src="https://img.shields.io/badge/requires-trilium--mcp_sidecar_running-critical">
+  </a>
+  <a href="LICENSE">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg">
+  </a>
+</p>
 
-A [Claude Code](https://code.claude.com) plugin for [Trilium](https://triliumnotes.org): Skills for working with your notes, plus the MCP connection to a running [trilium-mcp](https://github.com/Marceltov/trilium-mcp) server.
+A [Claude Code](https://code.claude.com) plugin for [Trilium](https://triliumnotes.org): skills for working with your notes, plus the MCP connection to a running [trilium-mcp](https://github.com/Marceltov/trilium-mcp) server.
 
 > [!IMPORTANT]
 > This plugin does **not** run, host, or bundle the MCP server. It's a thin client: it only works if you already have [`trilium-mcp`](https://github.com/Marceltov/trilium-mcp) deployed and reachable as a **container sidecar** next to your Trilium instance (see that repo's Quick Start). Installing this plugin alone gets you nothing — without a running `trilium-mcp` sidecar and valid credentials, every tool call fails.
 
-This plugin only points Claude Code at wherever you've already deployed `trilium-mcp`, and adds skills that use its tools.
+## Contents
+
+- [Contents](#contents)
+- [Install](#install)
+- [Configure the connection](#configure-the-connection)
+- [Skills](#skills)
+- [Related project](#related-project)
+- [License](#license)
 
 ## Install
 
@@ -44,7 +58,17 @@ Or add them to the `env` block of your Claude Code installation's `settings.json
 
 ## Skills
 
-See [`skills/`](skills/) — `setup-trilium-credentials` configures the connection; `create-note`, `delete-note`, `move-note`, `rename-note`, and `search-notes` cover basic note management; `create-note-from-template`, `apply-template-to-note`, and `find-template-instances` work with Trilium's template feature.
+See [`skills/`](skills/) for the full list with details. At a glance:
+
+- `setup-trilium-credentials` — configures the MCP connection.
+- `create-note`, `delete-note`, `move-note`, `rename-note`, `search-notes`, `manage-note-attributes` — everyday note management.
+- `create-note-from-template`, `apply-template-to-note`, `find-template-instances` — Trilium's template feature.
+- `journal-note` — the day/week/month/year journal notes.
+- `export-note-subtree` — export a note and its subtree as readable markdown or HTML.
+
+## Related project
+
+This plugin is the **client half**: skills that call MCP tools. [`trilium-mcp`](https://github.com/Marceltov/trilium-mcp) is the **server half** — the container sidecar that exposes Trilium's ETAPI as those MCP tools in the first place. You need both: deploy `trilium-mcp` next to your Trilium instance, then install this plugin to get skills that use it.
 
 ## License
 

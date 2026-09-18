@@ -11,7 +11,7 @@
 
 A [Claude Code](https://code.claude.com) plugin for [Trilium](https://triliumnotes.org): skills for working with your notes, plus the MCP connection to a running [trilium-mcp](https://github.com/Marceltov/trilium-mcp) server.
 
-> [!IMPORTANT]
+> [!IMPORTANT]  
 > This plugin does **not** run, host, or bundle the MCP server. It's a thin client: it only works if you already have [`trilium-mcp`](https://github.com/Marceltov/trilium-mcp) deployed and reachable as a **container sidecar** next to your Trilium instance (see that repo's Quick Start). Installing this plugin alone gets you nothing — without a running `trilium-mcp` sidecar and valid credentials, every tool call fails.
 
 ## Contents
@@ -32,35 +32,35 @@ A [Claude Code](https://code.claude.com) plugin for [Trilium](https://triliumnot
 
 ## Configure the connection
 
-The plugin needs `TRILIUM_MCP_URL` and `TRILIUM_ETAPI_TOKEN`, matching the host and token from your `trilium-mcp` deployment (see [Connecting a client](https://github.com/Marceltov/trilium-mcp#connecting-a-client)).
+The plugin needs at least one Trilium instance configured — a URL and ETAPI token matching a running `trilium-mcp` deployment (see [Connecting a client](https://github.com/Marceltov/trilium-mcp#connecting-a-client)). You can configure more than one instance; each becomes its own named MCP connection, and skills ask which instance you mean whenever more than one is connected and it isn't already clear from context.
 
-**Automatic (recommended):** if `TRILIUM_ETAPI_TOKEN` isn't set, a bundled `SessionStart` hook detects this and Claude will offer to run the `setup-trilium-credentials` skill, which asks for the URL and token and saves them to the *current Claude Code installation's* `settings.json` — no manual export needed on future launches of that installation. If you run multiple installs (e.g. via separate `CLAUDE_CONFIG_DIR`s), each is configured independently; run the skill once per install. You can also trigger it yourself by asking Claude to set up the Trilium connection.
+**Automatic (recommended):** if no instance is configured, a bundled `SessionStart` hook detects this and Claude will offer to run the `manage-trilium-instances` skill, which asks for a URL and token and registers them as an MCP server for the *current Claude Code installation* — no manual setup needed on future launches of that installation. Run the skill again any time to add another instance (give it a label like `work` or `home`), list what's configured, or remove one. If you run multiple installs (e.g. via separate `CLAUDE_CONFIG_DIR`s), each is configured independently. Either way, you'll need to restart Claude Code for a newly added instance to connect.
 
-**Manual:** export the variables yourself before starting Claude Code:
+**Manual:** register the default instance yourself with the Claude Code CLI:
 
 ```bash
-export TRILIUM_MCP_URL="https://your-host/mcp"
-export TRILIUM_ETAPI_TOKEN="your-etapi-token"
+claude mcp add --transport http trilium "https://your-host/mcp" \
+  -H "Authorization: your-etapi-token" -s user
 ```
 
-Or add them to the `env` block of your Claude Code installation's `settings.json` (defaults to `~/.claude/settings.json`, or `$CLAUDE_CONFIG_DIR/settings.json` if that's set) — this is exactly what the automatic setup above does for you:
+`-s user` scopes it to your current Claude Code installation, so it's available in every project. Create the token from that Trilium instance's *Options → ETAPI* screen. Restart Claude Code after running this — a newly registered server only connects on the next launch.
 
-```json
-{
-  "env": {
-    "TRILIUM_MCP_URL": "https://your-host/mcp",
-    "TRILIUM_ETAPI_TOKEN": "your-etapi-token"
-  }
-}
+### Working with multiple instances
+
+You're not limited to one Trilium instance. Each additional one is registered the same way, just under its own label — `trilium_<label>` (e.g. `trilium_work`) instead of the bare `trilium` — and shows up under its own tool prefix (`mcp__trilium_work__*`) alongside the default `mcp__trilium__*`. Skills that operate on notes check how many `trilium(_.+)?` prefixes are connected and, if more than one, ask which instance you mean before doing anything.
+
+```bash
+claude mcp add --transport http trilium_work "https://work-host/mcp" \
+  -H "Authorization: your-work-etapi-token" -s user
 ```
 
-`TRILIUM_MCP_URL` defaults to `http://localhost:8081/mcp` if unset, matching the local dev stack in `trilium-mcp`. `TRILIUM_ETAPI_TOKEN` has no default — create one from Trilium's *Options → ETAPI* screen.
+Run `claude mcp list` to see everything configured and its connection status, or `claude mcp remove trilium_work` to remove one. The `manage-trilium-instances` skill wraps all of this conversationally — it asks for a label, URL and token, and runs the right command for you.
 
 ## Skills
 
 See [`skills/`](skills/) for the full list with details. At a glance:
 
-- `setup-trilium-credentials` — configures the MCP connection.
+- `manage-trilium-instances` — configures the connection to one or more Trilium instances.
 - `create-note`, `delete-note`, `move-note`, `rename-note`, `search-notes`, `manage-note-attributes` — everyday note management.
 - `create-note-from-template`, `apply-template-to-note`, `find-template-instances` — Trilium's template feature.
 - `journal-note` — the day/week/month/year journal notes.

@@ -5,7 +5,9 @@ description: Create a new plain Trilium note (title, content, type, and parent l
 
 # Create a Trilium Note
 
-A thin wrapper around `mcp__trilium__createNote` for the common case: one new note, no template. For notes instantiated from a template, use the `create-note-from-template` skill instead.
+A thin wrapper around `createNote` for the common case: one new note, no template. For notes instantiated from a template, use the `create-note-from-template` skill instead.
+
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
 
 ## Steps
 

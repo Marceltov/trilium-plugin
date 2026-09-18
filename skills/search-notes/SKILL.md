@@ -5,7 +5,7 @@ description: Search for Trilium notes by title, content, or attributes using the
 
 # Search Trilium Notes
 
-A thin wrapper around `mcp__trilium__searchNotes`, which takes a query string in Trilium's own search syntax (https://triliumnext.github.io/Docs/Wiki/search.html) — the same syntax used in Trilium's UI search box. For searching specifically by template relationship, use the `find-template-instances` skill instead, which covers that syntax in more depth.
+A thin wrapper around `searchNotes`, which takes a query string in Trilium's own search syntax (https://triliumnext.github.io/Docs/Wiki/search.html) — the same syntax used in Trilium's UI search box. For searching specifically by template relationship, use the `find-template-instances` skill instead, which covers that syntax in more depth.
 
 ## Query syntax basics
 
@@ -13,6 +13,8 @@ A thin wrapper around `mcp__trilium__searchNotes`, which takes a query string in
 - `#labelName` matches notes carrying that label; `#labelName = 'value'` matches an exact value; other comparators (`*=*`, `>=`, `<=`, etc.) work per the syntax doc.
 - `~relationName.title = 'X'` or `~relationName.noteId = 'id'` matches notes whose relation points at a note with that title/id.
 - Combine clauses with `AND`/`OR`, and scope with `note.type`, `note.dateCreated`, etc. — see the syntax doc for the full grammar rather than guessing at an unfamiliar clause.
+
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
 
 ## Steps
 

@@ -1,3 +1,6 @@
+# Superpowers brainstorming specs (working docs; durable decisions go in docs/adr/ via ship-pr)
+docs/superpowers/
+
 # macOS
 .DS_Store
 

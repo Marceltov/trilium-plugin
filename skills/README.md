@@ -8,7 +8,7 @@ skills/
     SKILL.md
 ```
 
-- **`setup-trilium-credentials`** — configures `TRILIUM_MCP_URL` / `TRILIUM_ETAPI_TOKEN` by asking the user and persisting them to `~/.claude/settings.json`. Triggered automatically by the `SessionStart` hook in `hooks/` when the token is missing.
+- **`manage-trilium-instances`** — configures the connection to one or more Trilium instances by asking the user and persisting to `~/.claude/settings.json`. Triggered automatically by the `SessionStart` hook in `hooks/` when no instance is configured.
 - **`create-note`** — creates a plain new note (title, content, type, parent), no template involved.
 - **`delete-note`** — deletes a note and its entire subtree of children, after confirming with the user.
 - **`move-note`** — moves a note to a different parent (creates a new branch, deletes the old one).

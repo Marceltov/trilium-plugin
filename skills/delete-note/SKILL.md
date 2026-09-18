@@ -7,6 +7,8 @@ description: Delete a Trilium note (and its entire subtree of child notes) via t
 
 `deleteNoteById` deletes the note **and its whole subtree** — verified against a live instance: deleting a parent note deletes all of its child notes too, not just the one note. This is destructive, so always confirm before calling it.
 
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+
 ## Steps
 
 1. **Resolve the target note.** If the user gave a noteId, use it directly. Otherwise `searchNotes` by title; if there are multiple matches, list them and ask which one.

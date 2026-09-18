@@ -14,6 +14,8 @@ Trilium's journal feature gives every day, week, month, and year its own note, c
 
 Note content is HTML (`text/html` notes), not plain text — appending requires wrapping additions in a tag (e.g. `<p>...</p>`), not just concatenating a raw string, or the addition won't render as a separate block.
 
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+
 ## Steps
 
 1. **Determine which period the user means** (day, week, month, or year) and resolve the date — "today" needs today's actual date, not a guess; a relative reference ("last Monday", "next month") needs converting to the matching format before calling the tool.

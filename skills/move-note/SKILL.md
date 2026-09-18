@@ -9,6 +9,8 @@ There is no move-specific endpoint. Verified against a live instance: `patchBran
 
 Note that a Trilium note can be cloned into multiple parents at once (multiple branches, one note). If the note has more than one `parentBranchIds` entry, moving one placement must not touch the others — be precise about which branch you're deleting.
 
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+
 ## Steps
 
 1. **Resolve the note to move** (by title via `searchNotes` or by noteId if given) and the **destination parent note** (same resolution).

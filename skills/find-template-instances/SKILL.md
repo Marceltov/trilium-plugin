@@ -7,6 +7,8 @@ description: Search for Trilium notes instantiated from a given template, option
 
 Read-only — no confirmation needed. Composes entirely from `searchNotes` using Trilium's relation-target search syntax (https://triliumnext.github.io/Docs/Wiki/search.html); no template-specific endpoint exists.
 
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+
 ## Steps
 
 1. **Resolve the template.** If the user gave a noteId, use it directly. Otherwise `searchNotes("#template")` and match by title; if ambiguous, list candidates and ask.

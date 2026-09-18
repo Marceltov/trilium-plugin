@@ -9,6 +9,8 @@ Verified against a live instance: `patchNoteById` accepts `title` directly and a
 
 Note the distinction from a branch **prefix**: a note's title is global — changing it renames the note everywhere it appears (a note can be cloned into multiple parents). If the user only wants a note to display differently in one specific location without touching its title elsewhere, that's a `prefix` on that location's branch (via `patchBranchById`), not a rename — ask which one they mean if the note has more than one parent and this isn't already clear from context.
 
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+
 ## Steps
 
 1. **Resolve the note to rename** (by title via `searchNotes` or by noteId if given).

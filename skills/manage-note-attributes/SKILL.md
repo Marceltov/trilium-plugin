@@ -9,6 +9,8 @@ Labels (`#name` / `#name=value`) and relations (`~name` pointing at another note
 
 **Patching is limited** (verified by the tool descriptions and consistent with `patchNoteById`/`patchBranchById` behavior elsewhere in this plugin): `patchAttributeById` can only update a label's `value`/`position`, or a relation's `position`. It cannot change an attribute's `name`, `type`, or (for a relation) its target. To change any of those, delete the old attribute (`deleteAttributeById`) and create a new one (`postAttribute`) — don't attempt to patch around it.
 
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+
 ## Steps
 
 1. **Resolve the target note** (by title via `searchNotes` or by noteId if given).

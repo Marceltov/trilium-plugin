@@ -7,6 +7,8 @@ description: Create a new Trilium note instantiated from an existing template no
 
 In Trilium, a "template" is just a note carrying the `#template` label. Instantiating one is not a special ETAPI call — it's: create a blank note, then attach a `~template` relation to the template note. Verified against a live instance: once that relation exists, Trilium's **backend** automatically clones the template's child notes (as real, independently-editable notes, not references), copies its content onto the new note, and folds the template's promoted-attribute definitions into the new note's attribute list. There is no template-specific MCP/ETAPI endpoint — this composes entirely from `createNote`, `postAttribute`, `getNoteById`.
 
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+
 ## Steps
 
 1. **Resolve the template note.** If the user gave a noteId, use it directly. Otherwise `searchNotes("#template")` and match by title (case-insensitive substring). If more than one match, list them and ask which one. If none match, say so — don't guess.

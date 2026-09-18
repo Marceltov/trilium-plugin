@@ -9,6 +9,8 @@ description: Export a Trilium note and its entire subtree as readable markdown o
 
 There is no corresponding working import in this plugin: `importZip` was tested against a live instance and is broken as exposed by the MCP tool (it takes no file-content parameter, and calling it returns an HTTP 500). Don't offer it as an option.
 
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+
 ## Steps
 
 1. **Resolve the note to export** (by title via `searchNotes` or by noteId if given). Use `"root"` if the user wants the entire document exported.

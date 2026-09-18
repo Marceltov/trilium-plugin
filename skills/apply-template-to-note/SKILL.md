@@ -7,6 +7,8 @@ description: Retroactively attach an existing Trilium note to a template via a ~
 
 Same underlying mechanism as `create-note-from-template` (attaching a `~template` relation), but applied to a note that may already have real content and children — which makes this the destructive one of the template skills. Verified against a live instance: once the `~template` relation is attached, the target note's **content is replaced** with the template's content (they end up sharing a blob), and the template's child notes are cloned in as new children under the target. This is not reversible by simply deleting the relation.
 
+If more than one Trilium instance is connected this session, resolve which one to use first — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+
 ## Steps
 
 1. **Resolve the target note** (by title via `searchNotes` or by noteId if given) and the **template note** (same resolution as `create-note-from-template` step 1: noteId if given, else `searchNotes("#template")` matched by title, asking if ambiguous).

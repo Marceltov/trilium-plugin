@@ -31,22 +31,22 @@ check() {
   echo "ok ($desc)"
 }
 
-echo '{}' > "$tmp/settings.json"
-export TRILIUM_ETAPI_TOKEN=x
-check "default env var set" 0 no "selftest-1"
-unset TRILIUM_ETAPI_TOKEN
+check "nothing configured" 0 yes "selftest-1"
 
-check "nothing configured" 0 yes "selftest-2"
+cat > "$tmp/.claude.json" <<'JSON'
+{"mcpServers": {"trilium": {"type": "http", "url": "https://your-host/mcp"}}}
+JSON
+check "default instance configured" 0 no "selftest-2"
 
-cat > "$tmp/settings.json" <<'JSON'
+cat > "$tmp/.claude.json" <<'JSON'
 {"mcpServers": {"trilium_work": {"type": "http", "url": "https://work.example/mcp"}}}
 JSON
 check "labeled instance configured" 0 no "selftest-3"
 
-echo 'not json' > "$tmp/settings.json"
-check "malformed settings.json falls back to nudge" 0 yes "selftest-4"
+echo 'not json' > "$tmp/.claude.json"
+check "malformed .claude.json falls back to nudge" 0 yes "selftest-4"
 
-echo '{}' > "$tmp/settings.json"
+rm -f "$tmp/.claude.json"
 check "same session first call nudges" 0 yes "selftest-5"
 check "same session second call is deduped (no re-nudge)" 0 no "selftest-5"
 

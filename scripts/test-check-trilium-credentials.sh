@@ -46,6 +46,10 @@ check "labeled instance configured" 0 no "selftest-3"
 echo 'not json' > "$tmp/settings.json"
 check "malformed settings.json falls back to nudge" 0 yes "selftest-4"
 
+echo '{}' > "$tmp/settings.json"
+check "same session first call nudges" 0 yes "selftest-5"
+check "same session second call is deduped (no re-nudge)" 0 no "selftest-5"
+
 if [ "$fail" -ne 0 ]; then
   echo "SOME TESTS FAILED"
   exit 1

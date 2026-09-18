@@ -23,11 +23,11 @@ any_instance_configured() {
 import json, re, sys
 try:
     with open(sys.argv[1]) as f:
-        data = json.load(f)
+        servers = json.load(f)["mcpServers"]
+    ok = any(re.match(r"^trilium(_.+)?$", k) for k in servers)
 except Exception:
-    sys.exit(1)
-pattern = re.compile(r"^trilium(_.+)?$")
-sys.exit(0 if any(pattern.match(k) for k in data.get("mcpServers", {})) else 1)
+    ok = False
+sys.exit(0 if ok else 1)
 ' "$settings_path"
 }
 

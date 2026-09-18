@@ -11,7 +11,8 @@
 
 A [Claude Code](https://code.claude.com) plugin for [Trilium](https://triliumnotes.org): skills for working with your notes, plus the MCP connection to a running [trilium-mcp](https://github.com/Marceltov/trilium-mcp) server.
 
-> [!IMPORTANT] This plugin does **not** run, host, or bundle the MCP server. It's a thin client: it only works if you already have [`trilium-mcp`](https://github.com/Marceltov/trilium-mcp) deployed and reachable as a **container sidecar** next to your Trilium instance (see that repo's Quick Start). Installing this plugin alone gets you nothing — without a running `trilium-mcp` sidecar and valid credentials, every tool call fails.
+> [!IMPORTANT]  
+> This plugin does **not** run, host, or bundle the MCP server. It's a thin client: it only works if you already have [`trilium-mcp`](https://github.com/Marceltov/trilium-mcp) deployed and reachable as a **container sidecar** next to your Trilium instance (see that repo's Quick Start). Installing this plugin alone gets you nothing — without a running `trilium-mcp` sidecar and valid credentials, every tool call fails.
 
 ## Contents
 
@@ -33,7 +34,7 @@ A [Claude Code](https://code.claude.com) plugin for [Trilium](https://triliumnot
 
 The plugin needs at least one Trilium instance configured — a URL and ETAPI token matching a running `trilium-mcp` deployment (see [Connecting a client](https://github.com/Marceltov/trilium-mcp#connecting-a-client)). You can configure more than one instance; each becomes its own named MCP connection, and skills ask which instance you mean whenever more than one is connected and it isn't already clear from context.
 
-**Automatic (recommended):** if no instance is configured, a bundled `SessionStart` hook detects this and Claude will offer to run the `manage-trilium-instances` skill, which asks for a URL and token and saves them to the *current Claude Code installation's* `settings.json` — no manual export needed on future launches of that installation. Run the skill again any time to add another instance (give it a label like `work` or `home`), list what's configured, or remove one. If you run multiple installs (e.g. via separate `CLAUDE_CONFIG_DIR`s), each is configured independently.
+**Automatic (recommended):** if no instance is configured, a bundled `SessionStart` hook detects this and Claude will offer to run the `manage-trilium-instances` skill, which asks for a URL and token and saves them to the *current Claude Code installation's* `settings.json` — no manual export needed on future launches of that installation. Run the skill again any time to add another instance (give it a label like `work` or `home`), list what's configured, or remove one. If you run multiple installs (e.g. via separate `CLAUDE_CONFIG_DIR`s), each is configured independently. Either way, you'll need to restart Claude Code for a newly added instance to connect.
 
 **Manual:** export the default instance's variables yourself before starting Claude Code, equivalent to:
 

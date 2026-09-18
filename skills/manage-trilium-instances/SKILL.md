@@ -25,7 +25,7 @@ Figure out from the request whether the user wants to **add** a new instance, **
 
    If either signal is true, **stop here** — report that it's already configured (naming the settings.json path, never the token value) and finish. Only continue if the user explicitly wants an *additional* instance, or neither signal is true.
 
-2. **If this is an additional instance (not the first), ask for a label** — a short name like `work` or `home`. Sanitize it: lowercase, replace every run of characters outside `[a-z0-9_]` with `_`, strip leading/trailing `_`. If the result is empty, or collides with `trilium` or a label already present in `mcpServers` (read the settings file to check), ask for a different one — never silently overwrite an existing instance.
+2. **If this is an additional instance (not the first), ask for a label** — a short name like `work` or `home`. Sanitize it: lowercase, replace every run of characters outside `[a-z0-9_]` with `_`, strip leading/trailing `_`. If the result is empty, collides with `trilium` or a label already present in `mcpServers` (read the settings file to check), or if the resulting `TRILIUM_<LABEL>_URL`/`TRILIUM_<LABEL>_TOKEN` names already exist in `env` (this specifically rules out the labels `mcp` and `etapi`, which would collide with the default instance's env vars), ask for a different one — never silently overwrite an existing instance.
 
    Skip this step entirely for the first/default instance — it always stays unlabeled (server name `trilium`, env vars `TRILIUM_MCP_URL`/`TRILIUM_ETAPI_TOKEN`).
 

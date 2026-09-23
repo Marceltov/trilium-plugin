@@ -9,16 +9,6 @@
           }
         ]
       }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/check-trilium-credentials.sh"
-          }
-        ]
-      }
     ]
   }
 }

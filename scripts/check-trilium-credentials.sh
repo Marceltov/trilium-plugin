@@ -1,11 +1,7 @@
 #!/bin/bash
-# SessionStart + UserPromptSubmit hook: flags when no Trilium instance is
-# configured at all, so Claude can offer to run manage-trilium-instances
-# instead of the user hitting a silent/failed MCP connection. Registered on
-# both events so the check also fires on the first prompt after the plugin
-# is installed mid-session (plugins activate immediately, but a newly added
-# MCP server only connects on the next full restart) rather than only at the
-# next session start.
+# SessionStart hook: flags when no Trilium instance is configured at all, so
+# Claude can offer to run manage-trilium-instances instead of the user
+# hitting a silent/failed MCP connection.
 set -euo pipefail
 
 input=$(cat)

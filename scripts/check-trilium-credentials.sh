@@ -17,7 +17,7 @@ import json, re, sys
 try:
     with open(sys.argv[1]) as f:
         servers = json.load(f)["mcpServers"]
-    ok = any(re.match(r"^trilium(_.+)?$", k) for k in servers)
+    ok = any(re.match(r"^trilium([-_].+)?$", k) for k in servers)
 except Exception:
     ok = False
 sys.exit(0 if ok else 1)
@@ -41,7 +41,7 @@ if [ -n "$session_id" ]; then
   touch "$marker"
 fi
 
-context="No Trilium instance is configured: no trilium/trilium_<label> entry exists in ${claude_json_path}'s mcpServers, so there's no MCP connection to authenticate. Proactively offer to run the trilium-plugin:manage-trilium-instances skill with the user now (collects a URL and token for a new instance and registers it via 'claude mcp add' for this installation), unless they are already mid-task on something unrelated."
+context="No Trilium instance is configured: no trilium/trilium-<label> entry exists in ${claude_json_path}'s mcpServers, so there's no MCP connection to authenticate. Proactively offer to run the trilium-plugin:manage-trilium-instances skill with the user now (collects a URL and token for a new instance and registers it via 'claude mcp add' for this installation), unless they are already mid-task on something unrelated."
 
 printf '%s' "$input" | python3 -c '
 import json, sys

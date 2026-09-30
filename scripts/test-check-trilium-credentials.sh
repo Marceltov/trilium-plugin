@@ -41,7 +41,17 @@ check "default instance configured" 0 no "selftest-2"
 cat > "$tmp/.claude.json" <<'JSON'
 {"mcpServers": {"trilium_work": {"type": "http", "url": "https://work.example/mcp"}}}
 JSON
-check "labeled instance configured" 0 no "selftest-3"
+check "labeled instance configured (legacy underscore)" 0 no "selftest-3"
+
+cat > "$tmp/.claude.json" <<'JSON'
+{"mcpServers": {"trilium-work": {"type": "http", "url": "https://work.example/mcp"}}}
+JSON
+check "labeled instance configured" 0 no "selftest-3b"
+
+cat > "$tmp/.claude.json" <<'JSON'
+{"mcpServers": {"triliumx": {"type": "http", "url": "https://other.example/mcp"}}}
+JSON
+check "unrelated server name does not count" 0 yes "selftest-3c"
 
 echo 'not json' > "$tmp/.claude.json"
 check "malformed .claude.json falls back to nudge" 0 yes "selftest-4"

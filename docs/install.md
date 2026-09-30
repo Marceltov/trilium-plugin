@@ -15,23 +15,10 @@ In Claude Code:
 
 ## 3. Connect your Trilium
 
-=== "Automatic (recommended)"
+Start a new Claude Code session. If no Trilium is configured, the plugin's `SessionStart` hook flags it and Claude offers to run the `manage-trilium-instances` skill. You can also ask for it yourself at any time, for example "set up the Trilium plugin".
 
-    Start a new Claude Code session. If no Trilium is configured, the plugin's `SessionStart` hook flags it and Claude offers to run the `manage-trilium-instances` skill. It asks for the trilium-mcp URL and your ETAPI token and registers them with `claude mcp add`, scoped to your user so every project sees it.
+The skill asks for the trilium-mcp URL and your ETAPI token and registers the instance under the name `trilium`, scoped to your user so every project sees it. Configure instances only through this skill, so the names match what the other skills look for.
 
-    You can also start it yourself at any time, for example by asking Claude to "set up the Trilium plugin".
-
-=== "Manual"
-
-    Register the server yourself:
-
-    ```bash
-    claude mcp add --transport http trilium "https://trilium-mcp.example.com/mcp" \
-      -H "Authorization: YOUR_TRILIUM_ETAPI_TOKEN" -s user
-    ```
-
-    The skills expect the default instance to be named `trilium`.
-
-Restart Claude Code afterwards: a newly registered server only connects on the next launch. `claude mcp list` shows whether it's connected.
+Restart Claude Code afterwards: a newly registered server only connects on the next launch.
 
 If you use several Claude Code installations (separate `CLAUDE_CONFIG_DIR`s), each is configured on its own.

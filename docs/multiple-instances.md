@@ -5,18 +5,15 @@ You can connect more than one Trilium, for example a home and a work instance. E
 | Instance | MCP server name | Tool prefix |
 | -------- | --------------- | ----------- |
 | Default | `trilium` | `mcp__trilium__*` |
-| Labeled, e.g. `work` | `trilium_work` | `mcp__trilium_work__*` |
+| Labeled, e.g. `work` | `trilium-work` | `mcp__trilium-work__*` |
 
-## Add one
+## Add, list or remove one
 
-Ask Claude to add another Trilium instance. The `manage-trilium-instances` skill asks for a label (like `work` or `home`), the URL and the ETAPI token, and runs the right command. Or register it yourself:
+Ask Claude, for example "add my work Trilium" or "which Trilium instances are connected?". The `manage-trilium-instances` skill handles it:
 
-```bash
-claude mcp add --transport http trilium_work "https://trilium-work.example.com/mcp" \
-  -H "Authorization: YOUR_WORK_ETAPI_TOKEN" -s user
-```
-
-Restart Claude Code so it connects. `claude mcp list` shows every instance and its status, and `claude mcp remove trilium_work` removes one; the skill can list and remove them too.
+- **Add:** asks for a label (like `work` or `home`), the URL and the ETAPI token, then registers `trilium-<label>`. Restart Claude Code so it connects.
+- **List:** shows every configured instance and whether it's connected.
+- **Remove:** unregisters the instance you name.
 
 ## Which instance a skill uses
 

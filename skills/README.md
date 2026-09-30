@@ -8,7 +8,7 @@ skills/
     SKILL.md
 ```
 
-- **`manage-trilium-instances`** — configures the connection to one or more Trilium instances by asking the user and persisting to `~/.claude/settings.json`. Triggered automatically by the `SessionStart` hook in `hooks/` when no instance is configured.
+- **`manage-trilium-instances`** — configures the connection to one or more Trilium instances by asking the user and registering each with `claude mcp add`. Triggered automatically by the `SessionStart` hook in `hooks/` when no instance is configured.
 - **`create-note`** — creates a plain new note (title, content, type, parent), no template involved.
 - **`delete-note`** — deletes a note and its entire subtree of children, after confirming with the user.
 - **`move-note`** — moves a note to a different parent (creates a new branch, deletes the old one).
@@ -27,9 +27,9 @@ Skills here should call the MCP tools exposed by [trilium-mcp](https://github.co
 
 ## Working with multiple instances
 
-A user may have more than one Trilium instance connected at once — each shows up as its own MCP server, so tool names are namespaced per instance: `mcp__trilium__searchNotes` for the default instance, `mcp__trilium_work__searchNotes` for one labeled `work`, and so on (see `manage-trilium-instances`). Every skill that calls Trilium MCP tools resolves which instance to use like this:
+A user may have more than one Trilium instance connected at once — each shows up as its own MCP server, so tool names are namespaced per instance: `mcp__trilium__searchNotes` for the default instance, `mcp__trilium-work__searchNotes` for one labeled `work`, and so on (see `manage-trilium-instances`). Every skill that calls Trilium MCP tools resolves which instance to use like this:
 
-1. Note which `mcp__trilium(_.+)?__*` tool prefixes are actually available this session.
+1. Note which `mcp__trilium([-_].+)?__*` tool prefixes are actually available this session.
 2. Exactly one exists → use it, no question asked.
 3. More than one exists → check whether the user already named an instance in the conversation (by label, or something identifying like "the work one") and match it to the corresponding prefix.
 4. Still ambiguous → ask once which instance, listing the available labels.

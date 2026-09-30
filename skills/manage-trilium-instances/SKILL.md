@@ -5,9 +5,9 @@ description: Configure connections to one or more trilium-mcp deployments — ad
 
 # Manage Trilium Instances
 
-Every Trilium instance — including the first/default one — is its own MCP server registered with the `claude mcp add` CLI command, scoped `user` so it's available to every project under the current Claude Code installation. The default instance is named `trilium`; each additional one is `trilium_<label>` (e.g. `trilium_work`). Claude Code exposes each server's tools under its own prefix (`mcp__trilium__*`, `mcp__trilium_work__*`, …); skills resolve which prefix to use per task — see [Working with multiple instances](../README.md#working-with-multiple-instances).
+Every Trilium instance — including the first/default one — is its own MCP server registered with the `claude mcp add` CLI command, scoped `user` so it's available to every project under the current Claude Code installation. The default instance is named `trilium`; each additional one is `trilium-<label>` (e.g. `trilium-work`), the naming the trilium-mcp docs use too. Instances registered earlier as `trilium_<label>` still count. Claude Code exposes each server's tools under its own prefix (`mcp__trilium__*`, `mcp__trilium-work__*`, …); skills resolve which prefix to use per task — see [Working with multiple instances](../README.md#working-with-multiple-instances).
 
-**Do not write to settings.json, and don't rely on a bundled `.mcp.json`.** Earlier versions of this plugin shipped a project-scoped `.mcp.json` for the default instance (env-var driven) and had this skill write an `mcpServers` block into settings.json for additional ones — settings.json rejects a top-level `mcpServers` key outright (schema validation error: "Unrecognized field: mcpServers"), so that never actually worked for additional instances, and the bundled `.mcp.json` has been removed. Every instance now goes through `claude mcp add`/`list`/`get`/`remove`, which persist to that installation's own MCP config independently of settings.json — no manual JSON editing, and no need to resolve `CLAUDE_CONFIG_DIR` by hand.
+**This skill is the only way instances get configured.** Go through `claude mcp add`/`list`/`get`/`remove` only. Never write an `mcpServers` block into settings.json (it rejects the key) and never create a `.mcp.json`.
 
 ## Determine the operation
 
@@ -21,7 +21,7 @@ Figure out from the request whether the user wants to **add** a new instance, **
 
    If either signal is true, **stop here** — report that it's already configured (naming the scope from `claude mcp get`'s output, e.g. "user config") and finish. Only continue if the user explicitly wants an *additional* instance, or neither signal is true.
 
-2. **If this is an additional instance (not the first), ask for a label** — a short name like `work` or `home`. Sanitize it: lowercase, replace every run of characters outside `[a-z0-9_]` with `_`, strip leading/trailing `_`. If the result is empty, ask for a different one. Then run `claude mcp get trilium_<label>` — exit 0 means that name is already taken (its error output for a *miss* conveniently lists every configured server too, useful for suggesting a free label) — ask for a different label rather than silently overwriting an existing instance.
+2. **If this is an additional instance (not the first), ask for a label** — a short name like `work` or `home`. Sanitize it: lowercase, replace every run of characters outside `[a-z0-9]` with `-`, strip leading/trailing `-`. If the result is empty, ask for a different one. Then run `claude mcp get trilium-<label>` — exit 0 means that name is already taken (its error output for a *miss* conveniently lists every configured server too, useful for suggesting a free label) — ask for a different label rather than silently overwriting an existing instance.
 
    Skip this step entirely for the first/default instance — it always stays unlabeled (server name `trilium`).
 
@@ -34,18 +34,18 @@ Figure out from the request whether the user wants to **add** a new instance, **
 
        claude mcp add --transport http <name> "<url>" -H "Authorization: <token>" -s user
 
-   where `<name>` is `trilium` for the default instance or `trilium_<label>` for an additional one. `-s user` makes it available to every project under this installation. The token appears in this command's arguments (visible in the tool call, and briefly in process listings while it runs) — there's no CLI option to supply it another way; don't additionally print or log it anywhere else.
+   where `<name>` is `trilium` for the default instance or `trilium-<label>` for an additional one. `-s user` makes it available to every project under this installation. The token appears in this command's arguments (visible in the tool call, and briefly in process listings while it runs) — there's no CLI option to supply it another way; don't additionally print or log it anywhere else.
 
 5. **Tell the user to restart Claude Code** (or start a new session) — a newly `claude mcp add`-ed server only connects into the current session's tool list after a restart.
 
 ## List instances
 
 1. Run `claude mcp list` — it health-checks every configured server fresh, including ones just added this session, and works regardless of what's already loaded into the current session's tool list.
-2. From its output, keep only lines whose server name matches `trilium(_.+)?` (a literal `trilium`, plus any `trilium_<label>`). Each line ends with a connection status (e.g. "✔ Connected" or "✘ Failed to connect — ...").
+2. From its output, keep only lines whose server name matches `trilium([-_].+)?` (a literal `trilium`, plus any `trilium-<label>` or older `trilium_<label>`). Each line ends with a connection status (e.g. "✔ Connected" or "✘ Failed to connect — ...").
 3. Report the list: label (or "default" for `trilium`), and connected/not-connected per that status. Never print token values.
 
 ## Remove an instance
 
 1. Ask which instance (by label, or "default" for `trilium`) if not already clear.
-2. Run `claude mcp remove trilium` for the default, or `claude mcp remove trilium_<label>` for an additional one (no `-s` needed — it removes from whichever scope it's registered in).
+2. Run `claude mcp remove trilium` for the default, or `claude mcp remove <name>` with the instance's exact server name (e.g. `trilium-work`) for an additional one (no `-s` needed — it removes from whichever scope it's registered in).
 3. Tell the user to restart Claude Code for the removal to take effect.

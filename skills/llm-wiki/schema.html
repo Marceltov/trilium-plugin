@@ -1,0 +1,87 @@
+<h2>What this is</h2>
+<p>This note is the <strong>schema</strong> of the LLM wiki: the conventions an AI assistant follows when it writes and maintains the pages under <em>Wiki</em>. Read it fully at the start of every wiki session, before touching any page. When you and the assistant agree on a new convention, change it here, not in a chat.</p>
+<p>The pattern comes from Andrej Karpathy's "LLM wiki" idea: you curate <strong>sources</strong>, the assistant compiles them into a <strong>wiki</strong> of interlinked pages, and this schema keeps that work disciplined. Maintenance that humans abandon (cross-references, 15 pages touched per source) is the assistant's job.</p>
+
+<h2>Layout</h2>
+<ul>
+  <li><strong>Schema</strong> (this note, <code>#llmWikiSchema</code>): the rules.</li>
+  <li><strong>Wiki</strong> (<code>#llmWikiPart=wiki</code>): everything the assistant writes. One child per topic, each topic a <em>hub</em> page with its concept and entity pages beneath it. Summaries sit under the topic they mostly belong to; use clones (a second parent) when a page belongs to several topics.</li>
+  <li><strong>Sources</strong> (<code>#llmWikiPart=sources</code>, <code>#readOnly</code> inherited): raw material you add. Web clips, pasted articles, PDFs, files. The assistant reads these and <strong>never edits them</strong>. Group them however you like, for example by year.</li>
+  <li><strong>Templates</strong>: one template per page type. Every wiki page is created from one of them, so the labels below are always present.</li>
+  <li><strong>Views</strong>: saved searches that drive the workflows (pending sources, stubs, drafts, orphans, recent changes).</li>
+  <li><strong>Log</strong>: the journal day note. Every ingest, query that produced a page, and lint pass appends one line there (format below).</li>
+</ul>
+
+<h2>Page types and labels</h2>
+<p>Templates carry <code>#wiki</code> and <code>#wikiType</code>, which instances inherit, so <code>#wiki</code> finds every page. The promoted labels are set per page.</p>
+<table>
+  <thead><tr><th>Type</th><th>Template</th><th>Purpose</th><th>Labels and relations</th></tr></thead>
+  <tbody>
+    <tr><td><code>hub</code></td><td>Wiki Topic Hub</td><td>Entry point of a topic: what it covers, a curated list of its key pages, open questions.</td><td><code>#wikiTopic</code>, <code>#wikiStatus</code></td></tr>
+    <tr><td><code>summary</code></td><td>Wiki Source Summary</td><td>One page per ingested source: key claims, data, quotes, how it relates to existing pages.</td><td><code>~wikiSource</code> (the raw note), <code>#wikiTopic</code>, <code>#wikiStatus</code>, <code>#aiAssisted</code></td></tr>
+    <tr><td><code>concept</code></td><td>Wiki Concept</td><td>An idea, method, pattern or question, synthesised across sources, with citations to the summaries.</td><td><code>#wikiTopic</code>, <code>#wikiStatus</code>, <code>#aiAssisted</code>, <code>~relatesTo</code></td></tr>
+    <tr><td><code>entity</code></td><td>Wiki Entity</td><td>A person, organisation, product, tool, place or dataset.</td><td><code>#entityKind</code>, <code>#wikiTopic</code>, <code>#wikiStatus</code>, <code>#aiAssisted</code>, <code>~relatesTo</code></td></tr>
+  </tbody>
+</table>
+<ul>
+  <li><code>#wikiTopic</code>: short lowercase slug, the same as the hub's. One per topic the page belongs to (the label may repeat).</li>
+  <li><code>#wikiStatus</code>: <code>stub</code> (title only, to be written), <code>draft</code> (written by the assistant, not yet reviewed), <code>reviewed</code> (you read and accepted it). Only you set <code>reviewed</code>.</li>
+  <li><code>#aiAssisted</code>: present on anything the assistant wrote or substantially edited.</li>
+  <li><code>~wikiSource</code>: from a summary to its raw source note. This is how "sources not yet summarised" is computed, so it is mandatory on summaries.</li>
+  <li><code>~relatesTo</code>: a typed edge for connections worth showing in the note map that the body text alone does not make clear. Prefer inline links; use the relation sparingly.</li>
+</ul>
+
+<h2>Linking rules</h2>
+<ul>
+  <li>Link generously between pages inside the body text. An internal link is <code>&lt;a class="reference-link" href="#root/&lt;noteId&gt;"&gt;Title&lt;/a&gt;</code>. Links are the graph; Trilium's note map and backlinks panel render them.</li>
+  <li>Cite claims by linking to the summary page of the source, not to the raw source.</li>
+  <li>When a concept or entity is mentioned that has no page yet, create a <strong>stub</strong> (from the template, <code>#wikiStatus=stub</code>, one sentence saying why it should exist) and link to it. Stubs are the to-do list.</li>
+  <li>Never duplicate: before creating a page, search <code>#wiki</code> by title and by <code>#wikiTopic</code>. Extend the existing page instead.</li>
+  <li>Every page must be reachable from a hub. New pages are linked from their hub's page list in the same ingest.</li>
+</ul>
+
+<h2>Writing rules</h2>
+<ul>
+  <li>Bodies are HTML (Trilium text notes). Use headings, short paragraphs, lists and tables. No raw markdown.</li>
+  <li>Write for your future self: state the claim, then the evidence, then the open questions. Prefer concrete numbers and dates over adjectives.</li>
+  <li>Record disagreements. When a new source contradicts an existing page, do not silently overwrite: add a "Contradictions" section naming both sources and the dates.</li>
+  <li>Keep the raw source untouched. Quote it; do not reformat it.</li>
+</ul>
+
+<h2>Workflow: ingest</h2>
+<p>Trigger: "ingest", "process the sources", or a source added under <em>Sources</em>. Pending sources are the view <em>Sources not yet summarised</em>.</p>
+<ol>
+  <li>Read the raw source in full (and its attachments if any).</li>
+  <li>Tell the user the three to five key takeaways and the topic(s) you would file it under. Wait for corrections if the user is present; otherwise continue.</li>
+  <li>Find or create the topic hub. A new hub gets <code>#wikiTopic=&lt;slug&gt;</code> and <code>#wikiStatus=draft</code>.</li>
+  <li>Create a <strong>summary</strong> page from the template under the hub, with <code>~wikiSource</code> pointing at the raw note. Sections: Summary, Key claims, Data and quotes, Relevance, Open questions.</li>
+  <li>Update every concept and entity page the source touches: add the new evidence with a link to the summary, note contradictions, create stubs for new concepts or entities. Expect 5 to 15 pages per source.</li>
+  <li>Add the summary and any new pages to the hub's page list.</li>
+  <li>Append to today's journal note: <code>wiki | ingest | &lt;link to summary&gt; | &lt;n&gt; pages updated</code>.</li>
+  <li>Report: what was created, what was updated, which stubs now exist.</li>
+</ol>
+
+<h2>Workflow: query</h2>
+<ol>
+  <li>Search <code>#wiki</code> by topic and keywords; read the hub first, then drill into the pages it links.</li>
+  <li>Answer with links to the pages and summaries the answer rests on. Say when the wiki has nothing on the question.</li>
+  <li>If the answer required synthesis across several pages, offer to file it as a new <strong>concept</strong> page (status <code>draft</code>) so the exploration compounds. If filed, link it from the hub and log <code>wiki | query | &lt;link&gt;</code>.</li>
+</ol>
+
+<h2>Workflow: lint</h2>
+<p>Trigger: "lint the wiki", roughly weekly. Work through the views, fix what is mechanical, list what needs a human decision.</p>
+<ol>
+  <li><em>Sources not yet summarised</em>: offer to ingest them.</li>
+  <li><em>Orphan pages</em>: pages nothing links to. Link them from the right hub or propose deleting them.</li>
+  <li><em>Stubs</em>: pages with <code>#wikiStatus=stub</code>. Write the ones the existing summaries already support; list the rest as reading gaps.</li>
+  <li><em>Drafts awaiting review</em>: list them for the user; do not set <code>reviewed</code> yourself.</li>
+  <li>Read each hub and check for contradictions between pages, stale claims, concepts mentioned without a page, and missing cross-links. Fix the mechanical ones, report the rest.</li>
+  <li>Append to today's journal note: <code>wiki | lint | &lt;n&gt; fixes, &lt;n&gt; open items</code>.</li>
+</ol>
+
+<h2>Log line format</h2>
+<p>One paragraph per entry in the day note, so the journal doubles as a greppable log:</p>
+<p><code>wiki | ingest | &lt;summary link&gt; | 7 pages updated</code><br><code>wiki | query | &lt;concept link&gt;</code><br><code>wiki | lint | 4 fixes, 2 open items</code></p>
+
+<h2>Human review</h2>
+<p>After every ingest, open the topic hub in Trilium's note map. Wrong edges, misfiled pages and bad topic slugs are cheapest to fix right then. Set <code>#wikiStatus=reviewed</code> on pages you have read and accept. The graph is the review step this system has instead of a compiler.</p>

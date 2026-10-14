@@ -26,4 +26,8 @@ Claude picks a skill automatically when your request matches it, so you just ask
 - **`apply-template-to-note`**: Retroactively attaches an existing note to a template. Mutates the target note's content and children, so it confirms with the user before writing.
 - **`find-template-instances`**: Searches for notes derived from a given template, optionally filtered by promoted-attribute values.
 
+## Knowledge base
+
+- **`llm-wiki`**: Maintains an LLM wiki inside Trilium, after [Karpathy's LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): you collect raw sources, Claude compiles them into linked summary, concept, entity and hub pages, answers questions from them and lints the graph. The rules live in a schema note in your Trilium (`#llmWikiSchema`), and `setup.py` in the skill directory creates the structure (templates, read-only sources, saved-search views).
+
 The sources are in [`skills/`](https://github.com/Marceltov/trilium-plugin/tree/main/skills), one `SKILL.md` per skill.

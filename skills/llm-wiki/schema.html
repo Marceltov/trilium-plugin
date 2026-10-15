@@ -6,10 +6,18 @@
 <ul>
   <li><strong>Schema</strong> (this note, <code>#llmWikiSchema</code>): the rules.</li>
   <li><strong>Wiki</strong> (<code>#llmWikiPart=wiki</code>): everything the assistant writes. One child per topic, each topic a <em>hub</em> page with its concept and entity pages beneath it. Summaries sit under the topic they mostly belong to; use clones (a second parent) when a page belongs to several topics.</li>
-  <li><strong>Sources</strong> (<code>#llmWikiPart=sources</code>, <code>#readOnly</code> inherited): raw material you add. Web clips, pasted articles, PDFs, files. The assistant reads these and <strong>never edits them</strong>. Group them however you like, for example by year.</li>
+  <li><strong>Sources</strong> (<code>#llmWikiPart=sources</code>, <code>#readOnly</code> inherited): raw material you add. Web clips, pasted articles, PDFs, files. The assistant reads these and <strong>never edits them</strong>. Organisation is by year only, since topics live in the wiki (see <em>Sources layout</em>).</li>
   <li><strong>Templates</strong>: one template per page type. Every wiki page is created from one of them, so the labels below are always present.</li>
   <li><strong>Views</strong>: saved searches that drive the workflows (pending sources, stubs, drafts, orphans, recent changes).</li>
-  <li><strong>Log</strong>: the journal day note. Every ingest, query that produced a page, and lint pass appends one line there (format below).</li>
+  <li><strong>Log</strong>: the journal day note. Every ingest, query that produced a page, lint pass and other change to the wiki is recorded there (format below).</li>
+</ul>
+
+<h2>Sources layout</h2>
+<ul>
+  <li>One folder per year directly under <em>Sources</em> (<code>Sources/2026</code>), marked <code>#wikiSourceGroup=&lt;year&gt;</code>.</li>
+  <li><strong>Each direct child of a year folder is one source</strong>: a single note, or a folder when the source has parts (an article with its images, a PDF with notes, an exported notebook). Everything below it belongs to that source.</li>
+  <li>A summary's <code>~wikiSource</code> points at that one note. The view <em>Sources not yet summarised</em> lists the direct children of <em>Sources</em> and of year folders that no summary points at yet.</li>
+  <li>You may drop a clip directly under <em>Sources</em>; on ingest the assistant moves it into the year it was added.</li>
 </ul>
 
 <h2>Page types and labels</h2>
@@ -51,13 +59,14 @@
 <h2>Workflow: ingest</h2>
 <p>Trigger: "ingest", "process the sources", or a source added under <em>Sources</em>. Pending sources are the view <em>Sources not yet summarised</em>.</p>
 <ol>
+  <li>If the source sits directly under <em>Sources</em>, move it into its year folder (create the folder with <code>#wikiSourceGroup=&lt;year&gt;</code> if missing).</li>
   <li>Read the raw source in full (and its attachments if any).</li>
   <li>Tell the user the three to five key takeaways and the topic(s) you would file it under. Wait for corrections if the user is present; otherwise continue.</li>
   <li>Find or create the topic hub. A new hub gets <code>#wikiTopic=&lt;slug&gt;</code> and <code>#wikiStatus=draft</code>.</li>
   <li>Create a <strong>summary</strong> page from the template under the hub, with <code>~wikiSource</code> pointing at the raw note. Sections: Summary, Key claims, Data and quotes, Relevance, Open questions.</li>
   <li>Update every concept and entity page the source touches: add the new evidence with a link to the summary, note contradictions, create stubs for new concepts or entities. Expect 5 to 15 pages per source.</li>
   <li>Add the summary and any new pages to the hub's page list.</li>
-  <li>Append to today's journal note: <code>wiki | ingest | &lt;link to summary&gt; | &lt;n&gt; pages updated</code>.</li>
+  <li>Log it in today's journal note (format below): the summary, the hub, every page created or updated, the new stubs.</li>
   <li>Report: what was created, what was updated, which stubs now exist.</li>
 </ol>
 
@@ -65,7 +74,7 @@
 <ol>
   <li>Search <code>#wiki</code> by topic and keywords; read the hub first, then drill into the pages it links.</li>
   <li>Answer with links to the pages and summaries the answer rests on. Say when the wiki has nothing on the question.</li>
-  <li>If the answer required synthesis across several pages, offer to file it as a new <strong>concept</strong> page (status <code>draft</code>) so the exploration compounds. If filed, link it from the hub and log <code>wiki | query | &lt;link&gt;</code>.</li>
+  <li>If the answer required synthesis across several pages, offer to file it as a new <strong>concept</strong> page (status <code>draft</code>) so the exploration compounds. If filed, link it from the hub and log it.</li>
 </ol>
 
 <h2>Workflow: lint</h2>
@@ -76,12 +85,24 @@
   <li><em>Stubs</em>: pages with <code>#wikiStatus=stub</code>. Write the ones the existing summaries already support; list the rest as reading gaps.</li>
   <li><em>Drafts awaiting review</em>: list them for the user; do not set <code>reviewed</code> yourself.</li>
   <li>Read each hub and check for contradictions between pages, stale claims, concepts mentioned without a page, and missing cross-links. Fix the mechanical ones, report the rest.</li>
-  <li>Append to today's journal note: <code>wiki | lint | &lt;n&gt; fixes, &lt;n&gt; open items</code>.</li>
+  <li>Log it: each fix, and each open item for the user.</li>
 </ol>
 
-<h2>Log line format</h2>
-<p>One paragraph per entry in the day note, so the journal doubles as a greppable log:</p>
-<p><code>wiki | ingest | &lt;summary link&gt; | 7 pages updated</code><br><code>wiki | query | &lt;concept link&gt;</code><br><code>wiki | lint | 4 fixes, 2 open items</code></p>
+<h2>Log format</h2>
+<p>The day note has one <code>&lt;h2&gt;Wiki&lt;/h2&gt;</code> heading, created on the first wiki action of the day and kept below whatever else is in the note. Under it is one list. Every action is one list item: the action word in bold (<strong>ingest</strong>, <strong>query</strong>, <strong>lint</strong>, <strong>adopt</strong>, <strong>move</strong>, <strong>cleanup</strong>, <strong>schema</strong>), then what happened, with links to the pages. Details go in a nested list, for example the pages created, updated and stubbed. Later actions on the same day are appended to the same list.</p>
+<pre><code>&lt;h2&gt;Wiki&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;ingest&lt;/strong&gt;: Source title → &lt;summary link&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Created: &lt;links&gt;&lt;/li&gt;
+      &lt;li&gt;Updated: &lt;links&gt;&lt;/li&gt;
+      &lt;li&gt;Stubs: &lt;links&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;lint&lt;/strong&gt;: 4 fixes, 2 open items
+    &lt;ul&gt;&lt;li&gt;…&lt;/li&gt;&lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
 
 <h2>Human review</h2>
 <p>After every ingest, open the topic hub in Trilium's note map. Wrong edges, misfiled pages and bad topic slugs are cheapest to fix right then. Set <code>#wikiStatus=reviewed</code> on pages you have read and accept. The graph is the review step this system has instead of a compiler.</p>

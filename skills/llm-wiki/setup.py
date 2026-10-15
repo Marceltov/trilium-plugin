@@ -7,6 +7,7 @@ Creates (idempotently, found again by label on re-runs):
     ├── Schema                    #llmWikiSchema          (content: schema.html)
     ├── Wiki                      #llmWikiPart=wiki
     ├── Sources                   #llmWikiPart=sources  #readOnly(inheritable) #wikiSource(inheritable)
+    │   └── <current year>        #wikiSourceGroup=<year>  (each direct child is one source)
     ├── Templates                 #llmWikiPart=templates
     │   ├── Wiki Topic Hub        #template #wiki #wikiType=hub     + promoted-attribute definitions
     │   ├── Wiki Source Summary   #template #wiki #wikiType=summary + promoted-attribute definitions
@@ -31,6 +32,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+from datetime import date
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -107,7 +109,11 @@ TEMPLATES = [
 # parser treats an unquoted hyphenated label value as several tokens. Templates own
 # #wiki/#wikiType themselves, so #!template keeps them out of the page views.
 VIEWS = [
-    ("sourcesPending", "Sources not yet summarised", "#wikiSource #!llmWikiPart note.targetRelationCount = 0"),
+    # Only direct children of Sources or of a year folder count as sources; everything
+    # below them inherits #wikiSource too but belongs to that one source.
+    ("sourcesPending", "Sources not yet summarised",
+     "#wikiSource #!llmWikiPart #!wikiSourceGroup note.targetRelationCount = 0 "
+     "(note.parents.labels.llmWikiPart = sources or note.parents.labels.wikiSourceGroup)"),
     ("stubs", "Stubs", "#wiki #!template #wikiStatus=stub orderBy note.dateModified desc"),
     ("drafts", "Drafts awaiting review", "#wiki #!template #wikiStatus=draft orderBy note.dateModified desc"),
     # The != clause must come first: Trilium (0.106) returns nothing for a != test on an
@@ -267,10 +273,14 @@ def main() -> None:
     ensure_note(api, root, "Wiki", ("llmWikiPart", "wiki"),
                 content="<p>Pages the assistant writes. One child per topic hub.</p>",
                 extra_attrs=[("label", "iconClass", "bx bx-network-chart")])
-    ensure_note(api, root, "Sources", ("llmWikiPart", "sources"),
-                content="<p>Raw material: clips, articles, PDFs. Read-only for the assistant.</p>",
-                extra_attrs=[("label", "readOnly", "", True), ("label", "wikiSource", "", True),
-                             ("label", "iconClass", "bx bx-archive")])
+    sources, _ = ensure_note(api, root, "Sources", ("llmWikiPart", "sources"),
+                             content="<p>Raw material: clips, articles, PDFs. Read-only for the assistant.</p>",
+                             extra_attrs=[("label", "readOnly", "", True), ("label", "wikiSource", "", True),
+                                          ("label", "iconClass", "bx bx-archive")])
+    year = str(date.today().year)
+    ensure_note(api, sources, year, ("wikiSourceGroup", year),
+                content=f"<p>Sources added in {year}. Each direct child is one source.</p>",
+                extra_attrs=[("label", "iconClass", "bx bx-folder")])
     templates, _ = ensure_note(api, root, "Templates", ("llmWikiPart", "templates"),
                                content="<p>One template per wiki page type.</p>",
                                extra_attrs=[("label", "iconClass", "bx bx-copy-alt")])

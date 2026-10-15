@@ -33,13 +33,14 @@ If more than one Trilium instance is connected this session, resolve which one t
    | Schema step | Tools |
    |---|---|
    | Pending sources | run the view's query: `getNoteById(view)` → `searchString` label → `searchNotes(query)` |
+   | File a loose source | a note directly under *Sources* → move it into `Sources/<year>` (`#wikiSourceGroup=<year>`, create if missing); see `move-note` |
    | Read a source | `getNoteContent`, `getNoteAttachments` + `getAttachmentContent` |
    | Find existing pages | `searchNotes("#wiki #wikiTopic=<slug>")`, `searchNotes("#wiki <title words>")` |
    | Create a page | `createNote` (type `text`, under the hub) then `postAttribute` relation `template` → template id, then the promoted labels (`wikiTopic`, `wikiStatus`, `aiAssisted`) and, for summaries, relation `wikiSource` → the raw note. Same mechanics as `create-note-from-template`. |
    | Write / extend a page | `getNoteContent` → edit the HTML → `putNoteContentById`. Never replace a page you did not read first. |
    | Link pages | inline `<a class="reference-link" href="#root/<noteId>">Title</a>`; typed edges via `postAttribute` relation `relatesTo` |
    | Clone into a second topic | `postBranch` with the other hub as `parentNoteId` |
-   | Log | `getDayNote(today)` → `getNoteContent` → append `<p>wiki | ingest | <link> | n pages updated</p>` → `putNoteContentById` (see `journal-note`) |
+   | Log | `getDayNote(today)` → `getNoteContent` → add an `<li>` to the list under `<h2>Wiki</h2>` (create the heading on the first action of the day) → `putNoteContentById` (see `journal-note` and the schema's *Log format*) |
 
 4. **Respect the boundaries in the schema:** never edit anything under *Sources* (it is
    `#readOnly`; ETAPI would still allow it, so this is on you), never set `#wikiStatus=reviewed`
@@ -55,7 +56,7 @@ Offer the user two ways to create the structure. Both are idempotent and safe to
 
 - **Script (preferred when the ETAPI is reachable from this machine):**
   `python3 skills/llm-wiki/setup.py --url <trilium-url> --token <etapi-token>` creates the
-  `LLM Wiki` root with `Schema`, `Wiki`, `Sources`, `Templates` (4) and `Views` (6) under
+  `LLM Wiki` root with `Schema`, `Wiki`, `Sources` (plus the current year folder), `Templates` (4) and `Views` (6) under
   `root` (`--parent <noteId>` to put it elsewhere, `--dry-run` to preview). The schema text is
   `skills/llm-wiki/schema.html`; `--update-schema` pushes a changed file into an existing note.
 - **Through the MCP tools** (claude.ai, phone, no shell): read `setup.py`'s declarations
@@ -69,7 +70,7 @@ web clip or article under *Sources* and say "ingest".
 ## Notes
 
 - `getInboxNote` is Trilium's general inbox (often the day note). Clips the user wants in the
-  wiki should be moved under *Sources* (`patchBranchById` / `postBranch` + `deleteBranchById`,
+  wiki should be moved under *Sources/<year>* (`patchBranchById` / `postBranch` + `deleteBranchById`,
   see `move-note`), otherwise they inherit neither `#readOnly` nor `#wikiSource` and never show
   up as pending.
 - Search values with hyphens or spaces must be quoted: `#wikiTopic="machine-learning"`.

@@ -8,3 +8,4 @@ docs/superpowers/
 .vscode/
 .idea/
 site/
+__pycache__/

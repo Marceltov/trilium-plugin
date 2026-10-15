@@ -4,7 +4,7 @@ Claude picks a skill automatically when your request matches it, so you just ask
 
 ## Connection
 
-- **`manage-trilium-instances`**: Configures the connection to one or more Trilium instances: add, list or remove them, each registered with `claude mcp add`. Offered automatically by the `SessionStart` hook when no instance is configured.
+- **`manage-trilium-instances`**: Configures the connection to one or more Trilium instances: add, list or remove them, each registered with `claude mcp add`. Offered once by the `SessionStart` hook, in the first session without a configured instance.
 
 ## Everyday notes
 

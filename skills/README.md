@@ -8,7 +8,7 @@ skills/
     SKILL.md
 ```
 
-- **`manage-trilium-instances`** — configures the connection to one or more Trilium instances by asking the user and registering each with `claude mcp add`. Triggered automatically by the `SessionStart` hook in `hooks/` when no instance is configured.
+- **`manage-trilium-instances`** — configures the connection to one or more Trilium instances by asking the user and registering each with `claude mcp add`. Offered once per installation by the `SessionStart` hook in `hooks/`, in the first session without a configured instance.
 - **`create-note`** — creates a plain new note (title, content, type, parent), no template involved.
 - **`delete-note`** — deletes a note and its entire subtree of children, after confirming with the user.
 - **`move-note`** — moves a note to a different parent (creates a new branch, deletes the old one).

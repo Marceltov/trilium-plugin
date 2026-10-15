@@ -28,20 +28,18 @@ if any_instance_configured; then
   exit 0
 fi
 
-session_id=$(printf '%s' "$input" | python3 -c 'import json, sys; print(json.load(sys.stdin).get("session_id", ""))')
-
-# UserPromptSubmit fires on every message; SessionStart and UserPromptSubmit
-# both run this script. Only surface the reminder once per session (whichever
-# fires first) instead of re-nagging on every prompt until an instance lands.
-if [ -n "$session_id" ]; then
-  marker="${TMPDIR:-/tmp}/trilium-plugin-credential-notice-${session_id}"
-  if [ -e "$marker" ]; then
-    exit 0
-  fi
-  touch "$marker"
+# Offer setup once per installation, not every session. After the first
+# offer the user knows the skill exists; people who connect another way (a
+# claude.ai connector, which this check can't see) or decline aren't asked
+# again. The skill stays available whenever the user asks for it.
+state_dir="${CLAUDE_PLUGIN_DATA:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/plugin-data/trilium-plugin}"
+marker="$state_dir/setup-offered"
+if [ -e "$marker" ]; then
+  exit 0
 fi
+mkdir -p "$state_dir" 2>/dev/null && touch "$marker" 2>/dev/null || true
 
-context="No Trilium instance is configured: no trilium/trilium-<label> entry exists in ${claude_json_path}'s mcpServers, so there's no MCP connection to authenticate. Proactively offer to run the trilium-plugin:manage-trilium-instances skill with the user now (collects a URL and token for a new instance and registers it via 'claude mcp add' for this installation), unless they are already mid-task on something unrelated."
+context="No Trilium instance is configured: no trilium/trilium-<label> entry exists in ${claude_json_path}'s mcpServers, so there's no MCP connection to authenticate. Proactively offer to run the trilium-plugin:manage-trilium-instances skill with the user now (collects a URL and token for a new instance and registers it via 'claude mcp add' for this installation), unless they are already mid-task on something unrelated. This offer is made only once per installation; if the user declines or already reaches it another way (for example a claude.ai connector), drop it."
 
 printf '%s' "$input" | python3 -c '
 import json, sys

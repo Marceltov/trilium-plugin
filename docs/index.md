@@ -24,7 +24,7 @@ hide:
 
 ## What it does
 
-- **Sets up the connection.** If no Trilium is configured, a `SessionStart` hook notices and Claude offers to register one: it asks for the URL and ETAPI token and runs `claude mcp add` for you.
+- **Sets up the connection.** If no Trilium is configured, a `SessionStart` hook notices in your first session and Claude offers, once, to register one: it asks for the URL and ETAPI token and runs `claude mcp add` for you.
 - **Knows Trilium's features.** Skills cover templates, promoted attributes, journal notes and subtree export, so Claude uses the right ETAPI calls instead of guessing.
 - **Handles several instances.** Connect a home and a work Trilium side by side; skills ask which one you mean when it isn't clear. See [Multiple instances](multiple-instances.md).
 - **Asks before destructive changes.** Deleting a note or applying a template to an existing one is confirmed with you first.

@@ -1,8 +1,8 @@
 # Install and connect
 
-## 1. Deploy trilium-mcp
+## 1. Deploy the Trilium Notes MCP server
 
-The plugin talks to Trilium through a running [trilium-mcp](https://trilium-mcp.marceltov.de/) server. Set that up first with its [quick start](https://trilium-mcp.marceltov.de/getting-started/), and create an ETAPI token under *Options → ETAPI* in Trilium.
+The plugin talks to Trilium Notes through a running [Trilium Notes MCP server](https://trilium-mcp.marceltov.de/). Set that up first with its [quick start](https://trilium-mcp.marceltov.de/getting-started/), and create an ETAPI token under *Options → ETAPI* in Trilium Notes.
 
 ## 2. Install the plugin
 
@@ -13,11 +13,11 @@ In Claude Code:
 /plugin install trilium
 ```
 
-## 3. Connect your Trilium
+## 3. Connect your Trilium Notes instance
 
-Start a new Claude Code session. If no Trilium is configured, the plugin's `SessionStart` hook flags it and Claude offers to run the `manage-trilium-instances` skill. It offers this once per installation, in the first session after you install the plugin; after that, ask for it yourself whenever you like, for example "set up the Trilium plugin".
+Start a new Claude Code session. If no Trilium Notes instance is configured, the plugin's `SessionStart` hook flags it and Claude offers to run the `trilium-manage-instances` skill. It offers this once per installation, in the first session after you install the plugin; after that, ask for it yourself whenever you like, for example "set up the Trilium Notes plugin".
 
-The skill asks for the trilium-mcp URL and your ETAPI token and registers the instance under the name `trilium`, scoped to your user so every project sees it. Configure instances only through this skill, so the names match what the other skills look for.
+The skill asks for the Trilium Notes MCP server URL and your ETAPI token and registers the instance under the name `trilium`, scoped to your user so every project sees it. Configure instances only through this skill, so the names match what the other skills look for.
 
 Restart Claude Code afterwards: a newly registered server only connects on the next launch.
 

@@ -1,0 +1,17 @@
+name: Checks
+
+# The shared rules copies in skills/*/reference/ must match shared/rules.md,
+# and the SessionStart hook's self-test must pass.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: scripts/sync-shared.sh --check
+      - run: bash scripts/test-check-trilium-credentials.sh

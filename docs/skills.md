@@ -1,33 +1,33 @@
 # Skills
 
-Claude picks a skill automatically when your request matches it, so you just ask in plain words ("move my meeting notes under Projects"). Each skill calls the [trilium-mcp](https://trilium-mcp.marceltov.de/) tools rather than the ETAPI directly.
+Claude picks a skill automatically when your request matches it, so you just ask in plain words ("move my meeting notes under Projects"). Each skill calls the [Trilium Notes MCP server](https://trilium-mcp.marceltov.de/) tools rather than the ETAPI directly.
 
 ## Connection
 
-- **`manage-trilium-instances`**: Configures the connection to one or more Trilium instances: add, list or remove them, each registered with `claude mcp add`. Offered once by the `SessionStart` hook, in the first session without a configured instance.
+- **`trilium-manage-instances`**: Configures the connection to one or more Trilium Notes instances: add, list or remove them, each registered with `claude mcp add`. Offered once by the `SessionStart` hook, in the first session without a configured instance.
 
 ## Everyday notes
 
-- **`create-note`**: Creates a plain new note (title, content, type, parent), no template involved.
-- **`delete-note`**: Deletes a note and its entire subtree of children, after confirming with the user.
-- **`move-note`**: Moves a note to a different parent (creates a new branch, deletes the old one).
-- **`rename-note`**: Changes a note's title.
-- **`search-notes`**: General-purpose note search by title, content, or attributes.
-- **`manage-note-attributes`**: Add, update, or remove labels and relations on a note.
+- **`trilium-create-note`**: Creates a plain new note (title, content, type, parent), no template involved.
+- **`trilium-delete-note`**: Deletes a note and its entire subtree of children, after confirming with the user.
+- **`trilium-move-note`**: Moves a note to a different parent (creates a new branch, deletes the old one).
+- **`trilium-rename-note`**: Changes a note's title.
+- **`trilium-search-notes`**: General-purpose note search by title, content, or attributes.
+- **`trilium-manage-note-attributes`**: Add, update, or remove labels and relations on a note.
 
 ## Journal and export
 
-- **`journal-note`**: Get or append to the day/week/month/year journal note for a date.
-- **`export-note-subtree`**: Export a note and its subtree as readable markdown or HTML.
+- **`trilium-journal-note`**: Get or append to the day/week/month/year journal note for a date.
+- **`trilium-export-note-subtree`**: Export a note and its subtree as readable markdown or HTML.
 
 ## Templates
 
-- **`create-note-from-template`**: Creates a new note from an existing template note (`~template` relation) and prompts for the template's promoted-attribute values.
-- **`apply-template-to-note`**: Retroactively attaches an existing note to a template. Mutates the target note's content and children, so it confirms with the user before writing.
-- **`find-template-instances`**: Searches for notes derived from a given template, optionally filtered by promoted-attribute values.
+- **`trilium-create-note-from-template`**: Creates a new note from an existing template note (`~template` relation) and prompts for the template's promoted-attribute values.
+- **`trilium-apply-template-to-note`**: Retroactively attaches an existing note to a template. Mutates the target note's content and children, so it confirms with the user before writing.
+- **`trilium-find-template-instances`**: Searches for notes derived from a given template, optionally filtered by promoted-attribute values.
 
 ## Knowledge base
 
-- **`llm-wiki`**: Maintains an LLM wiki inside Trilium, after [Karpathy's LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): you collect raw sources, Claude compiles them into linked summary, concept, entity and hub pages, answers questions from them and lints the graph. The rules live in a schema note in your Trilium (`#llmWikiSchema`), and `setup.py` in the skill directory creates the structure (templates, read-only sources, saved-search views).
+- **`trilium-llm-wiki`**: Maintains an LLM wiki inside Trilium Notes, after [Karpathy's LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): you collect raw sources, Claude compiles them into linked summary, concept, entity and hub pages, answers questions from them and lints the graph. The rules live in a schema note in your Trilium Notes instance (`#llmWikiSchema`), and `setup.py` in the skill directory creates the structure (templates, read-only sources, saved-search views).
 
 The sources are in [`skills/`](https://github.com/Marceltov/trilium-plugin/tree/main/skills), one `SKILL.md` per skill.

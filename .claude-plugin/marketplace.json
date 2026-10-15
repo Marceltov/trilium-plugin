@@ -1,5 +1,6 @@
 {
   "name": "trilium-plugin",
+  "description": "Claude Code plugin for Trilium Notes: skills on top of the Trilium Notes MCP server.",
   "owner": {
     "name": "Marcel Bruckner (Marceltov)"
   },
@@ -7,7 +8,7 @@
     {
       "name": "trilium",
       "source": "./",
-      "description": "Skills plus the MCP connection to a running trilium-mcp server."
+      "description": "Skills plus the MCP connection to a running Trilium Notes MCP server."
     }
   ]
 }

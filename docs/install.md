@@ -15,7 +15,7 @@ In Claude Code:
 
 ## 3. Connect your Trilium
 
-Start a new Claude Code session. If no Trilium is configured, the plugin's `SessionStart` hook flags it and Claude offers to run the `manage-trilium-instances` skill. You can also ask for it yourself at any time, for example "set up the Trilium plugin".
+Start a new Claude Code session. If no Trilium is configured, the plugin's `SessionStart` hook flags it and Claude offers to run the `manage-trilium-instances` skill. It offers this once per installation, in the first session after you install the plugin; after that, ask for it yourself whenever you like, for example "set up the Trilium plugin".
 
 The skill asks for the trilium-mcp URL and your ETAPI token and registers the instance under the name `trilium`, scoped to your user so every project sees it. Configure instances only through this skill, so the names match what the other skills look for.
 

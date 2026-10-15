@@ -6,7 +6,7 @@
 <ul>
   <li><strong>Schema</strong> (this note, <code>#llmWikiSchema</code>): the rules.</li>
   <li><strong>Wiki</strong> (<code>#llmWikiPart=wiki</code>): everything the assistant writes. One child per topic, each topic a <em>hub</em> page with its concept and entity pages beneath it. Summaries sit under the topic they mostly belong to; use clones (a second parent) when a page belongs to several topics.</li>
-  <li><strong>Sources</strong> (<code>#llmWikiPart=sources</code>, <code>#readOnly</code> inherited): raw material you add. Web clips, pasted articles, PDFs, files. The assistant reads these and <strong>never edits them</strong>. Organisation is by year only, since topics live in the wiki (see <em>Sources layout</em>).</li>
+  <li><strong>Sources</strong> (<code>#llmWikiPart=sources</code>, <code>#readOnly</code> inherited): raw material you add. Web clips, pasted articles, PDFs, files. The assistant reads these and <strong>never edits them</strong>; the one thing it adds is a fetched copy when you saved only a link (see <em>Link-only sources</em>). Organisation is by year only, since topics live in the wiki (see <em>Sources layout</em>).</li>
   <li><strong>Templates</strong>: one template per page type. Every wiki page is created from one of them, so the labels below are always present.</li>
   <li><strong>Views</strong>: saved searches that drive the workflows (pending sources, stubs, drafts, orphans, recent changes).</li>
   <li><strong>Log</strong>: the journal day note. Every ingest, query that produced a page, lint pass and other change to the wiki is recorded there (format below).</li>
@@ -19,6 +19,17 @@
   <li>A summary's <code>~wikiSource</code> points at that one note. The view <em>Sources not yet summarised</em> lists the direct children of <em>Sources</em> and of year folders that no summary points at yet.</li>
   <li>You may drop a clip directly under <em>Sources</em>; on ingest the assistant moves it into the year it was added.</li>
 </ul>
+
+<h2>Link-only sources</h2>
+<p>A source that is little more than a URL (a bare link, an app's share text) cannot be summarised now or checked later. On ingest the assistant collects it:</p>
+<ol>
+  <li>Fetch the page, preferably raw (<code>curl</code> or similar), and extract the article body from the HTML. Drop navigation, ads, cookie banners and related-article lists; do not reword, shorten or summarise the article. Keep images as links to their original URLs.</li>
+  <li>Create one child note under the link note, titled <em>Fetched copy</em>, with the article as HTML and the labels <code>#sourceUrl=&lt;url&gt;</code>, <code>#fetchedOn=&lt;YYYY-MM-DD&gt;</code>, <code>#fetchedVia=raw</code> and <code>#aiAssisted</code>. The link note becomes the source folder and stays untouched; the summary's <code>~wikiSource</code> still points at it.</li>
+  <li>If only a processed fetch is available (a tool that returns a model's rendering of the page rather than the page), use it, set <code>#fetchedVia=summary</code>, and tell the user the copy is not the original wording.</li>
+  <li>If the fetch fails or returns a paywall, login page or teaser, stop: tell the user, leave the source pending, and do not summarise from the title or URL.</li>
+  <li>If the link note's title is share text rather than the article's title, suggest a better one; the user renames it.</li>
+</ol>
+<p>The fetched copy is the only thing the assistant writes under <em>Sources</em>.</p>
 
 <h2>Page types and labels</h2>
 <p>Templates carry <code>#wiki</code> and <code>#wikiType</code>, which instances inherit, so <code>#wiki</code> finds every page. The promoted labels are set per page.</p>
@@ -60,7 +71,7 @@
 <p>Trigger: "ingest", "process the sources", or a source added under <em>Sources</em>. Pending sources are the view <em>Sources not yet summarised</em>.</p>
 <ol>
   <li>If the source sits directly under <em>Sources</em>, move it into its year folder (create the folder with <code>#wikiSourceGroup=&lt;year&gt;</code> if missing).</li>
-  <li>Read the raw source in full (and its attachments if any).</li>
+  <li>Read the raw source in full (and its attachments if any). If it is only a link, collect it first (see <em>Link-only sources</em>).</li>
   <li>Tell the user the three to five key takeaways and the topic(s) you would file it under. Wait for corrections if the user is present; otherwise continue.</li>
   <li>Find or create the topic hub. A new hub gets <code>#wikiTopic=&lt;slug&gt;</code> and <code>#wikiStatus=draft</code>.</li>
   <li>Create a <strong>summary</strong> page from the template under the hub, with <code>~wikiSource</code> pointing at the raw note. Sections: Summary, Key claims, Data and quotes, Relevance, Open questions.</li>

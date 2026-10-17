@@ -11,7 +11,7 @@ You can connect more than one Trilium Notes instance, for example a home and a w
 
 Ask Claude, for example "add my work Trilium Notes instance" or "which Trilium Notes instances are connected?". The `trilium-manage-instances` skill handles it:
 
-- **Add:** asks for a label (like `work` or `home`), the URL and the ETAPI token, then registers `trilium-<label>`. Restart Claude Code so it connects.
+- **Add:** asks for a label (like `work` or `home`) and the URL, then registers `trilium-<label>`. Restart Claude Code, then sign in through `/mcp` → **Authenticate** (or, for a server without OAuth, the skill asks for an ETAPI token instead).
 - **List:** shows every configured instance and whether it's connected.
 - **Remove:** unregisters the instance you name.
 

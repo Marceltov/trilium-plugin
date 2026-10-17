@@ -1,6 +1,6 @@
 ---
 name: trilium-manage-instances
-description: Configure connections to one or more Trilium Notes MCP server deployments — add a new instance (URL + ETAPI token, optionally labeled), list which are configured/connected, or remove one. Every instance is registered as a user-scoped MCP server via `claude mcp add` (no settings.json editing, no bundled .mcp.json). Use when the trilium MCP server is unconfigured, disconnected, or missing credentials (including when a SessionStart hook flags this), when the user asks to set up, configure, or connect the Trilium Notes plugin, or when they want to add, remove, or list additional Trilium Notes instances.
+description: Configure connections to one or more Trilium Notes MCP server deployments — add a new instance (URL, signed in with OAuth or, as a fallback, an ETAPI token; optionally labeled), list which are configured/connected, or remove one. Every instance is registered as a user-scoped MCP server via `claude mcp add` (no settings.json editing, no bundled .mcp.json). Use when the trilium MCP server is unconfigured, disconnected, or missing credentials (including when a SessionStart hook flags this), when the user asks to set up, configure, or connect the Trilium Notes plugin, or when they want to add, remove, or list additional Trilium Notes instances.
 ---
 
 # Manage Trilium Notes Instances
@@ -37,16 +37,19 @@ Figure out from the request whether the user wants to **add** a new instance, **
 
 3. **Ask for the remaining values**, one at a time (plain question or `AskUserQuestion` if available):
    - The instance's MCP URL. For the default instance, `http://localhost:8081/mcp` is a common value for a local dev `trilium-mcp` stack — offer it as a suggestion, but there's no automatic fallback anymore, so still ask. For a labeled instance, there's no natural default — just ask.
-   - Its ETAPI token, created from that Trilium Notes instance's *Options → ETAPI* screen. Required, no default.
-   - Never print the token back in a confirmation message or log it.
+   - Whether the server has OAuth enabled (`MCP_BASE_URL` and `MCP_OAUTH_SECRET` set). That is the default and needs nothing else. Only if it doesn't, ask for an ETAPI token from that Trilium Notes instance's *Options → ETAPI* screen, and never print the token back or log it.
 
-4. **Register the instance** by running:
+4. **Register the instance.** With OAuth (the default):
+
+       claude mcp add --transport http <name> "<url>" -s user
+
+   Without OAuth, as a fallback, pass the token as a header:
 
        claude mcp add --transport http <name> "<url>" -H "Authorization: <token>" -s user
 
-   where `<name>` is `trilium` for the default instance or `trilium-<label>` for an additional one. `-s user` makes it available to every project under this installation. The token appears in this command's arguments (visible in the tool call, and briefly in process listings while it runs) — there's no CLI option to supply it another way; don't additionally print or log it anywhere else.
+   `<name>` is `trilium` for the default instance or `trilium-<label>` for an additional one. `-s user` makes it available to every project under this installation. A token appears in the command's arguments (visible in the tool call, and briefly in process listings while it runs); there's no CLI option to supply it another way, so don't print or log it anywhere else.
 
-5. **Tell the user to restart Claude Code** (or start a new session) — a newly `claude mcp add`-ed server only connects into the current session's tool list after a restart.
+5. **Tell the user to restart Claude Code** (or start a new session): a newly added server only connects into a session's tool list after a restart. With OAuth, they then run `/mcp`, pick the server and choose **Authenticate**; a browser opens and they sign in with the Trilium Notes password. Claude Code stores and refreshes the token itself.
 
 ## List instances
 

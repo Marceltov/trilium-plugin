@@ -5,12 +5,27 @@
 <h2>Layout</h2>
 <ul>
   <li><strong>Schema</strong> (this note, <code>#llmWikiSchema</code>): the rules.</li>
+  <li><strong>Locks</strong> (<code>#llmWikiPart=locks</code>): the write lock, one claim note per session that is writing (see <em>Write lock</em>).</li>
+  <li><strong>Graph</strong> and <strong>Review graph</strong>: note maps of the wiki (see <em>Graph</em>).</li>
   <li><strong>Wiki</strong> (<code>#llmWikiPart=wiki</code>): everything the assistant writes. One child per topic, each topic a <em>hub</em> page with its concept and entity pages beneath it. Summaries sit under the topic they mostly belong to; use clones (a second parent) when a page belongs to several topics.</li>
   <li><strong>Sources</strong> (<code>#llmWikiPart=sources</code>, <code>#readOnly</code> inherited): raw material you add. Web clips, pasted articles, PDFs, files. The assistant reads these and <strong>never edits them</strong>. Organisation is by year only, since topics live in the wiki (see <em>Sources layout</em>).</li>
   <li><strong>Templates</strong>: one template per page type. Every wiki page is created from one of them, so the labels below are always present.</li>
-  <li><strong>Views</strong>: saved searches that drive the workflows (pending sources, stubs, drafts, orphans, recent changes).</li>
+  <li><strong>Views</strong>: saved searches that drive the workflows (to review, pending sources, stubs, drafts, orphans, recent changes).</li>
   <li><strong>Log</strong>: the journal day note. Every ingest, query that produced a page, lint pass and other change to the wiki is recorded there (format below).</li>
 </ul>
+
+<h2>Write lock</h2>
+<p>Several assistant sessions can work on the same Trilium at once, and an ETAPI write replaces a note without leaving a revision. So only one session writes to the wiki at a time. The lock is a queue of <strong>claims</strong> under <em>Locks</em>: creating a new note never collides, whereas a single shared lock note cannot work (a create with a fixed noteId silently replaces the existing note).</p>
+<p><strong>What needs the lock:</strong> every write under <em>LLM Wiki</em> (schema, wiki pages, templates, views, attributes on any of them) and the <em>Wiki</em> section of the day note. Reading needs no lock.</p>
+<ol>
+  <li><strong>Claim.</strong> Create a text note under <em>Locks</em>, titled <code>&lt;session name&gt;: &lt;what you are about to do&gt;</code>, with one line saying where the session runs.</li>
+  <li><strong>Check.</strong> Search <code>note.parents.labels.llmWikiPart = locks note.utcDateModified &gt;= NOW-1800 orderBy note.utcDateCreated</code>. These are the live claims, oldest first. If yours is first (on equal times, the lower noteId wins), you hold the lock.</li>
+  <li><strong>Not first:</strong> tell the user which session holds it (the claim's title) and how old it is. Then either wait and check again every few minutes, touching your claim (rewrite its content) at least every 25 minutes so it keeps its place, or delete your claim and stop. Never write while another claim is ahead of yours.</li>
+  <li><strong>Holding:</strong> a claim expires 30 minutes after it was last modified. On longer work, rewrite its content with the current step before then. Still read every page right before replacing it.</li>
+  <li><strong>Release.</strong> Delete your claim as soon as the writes and the log entry are done, and also when you stop early or hit an error.</li>
+  <li><strong>Stale claims</strong> (not modified for 30 minutes) do not count. Any session may delete them; you may delete any claim by hand.</li>
+</ol>
+<p>Claims are not logged. The lock is advisory: it works because every session follows this schema.</p>
 
 <h2>Knowledge here, work items in the issue tracker</h2>
 <p>The wiki records what is known: how things work, why they were decided, what went wrong and how it was fixed, accepted risks. It is <strong>not</strong> a task list. Anything that is work to do (build, fix, remove, migrate, correct a document, decide on a change) is tracked as an <strong>issue</strong> (for example a GitHub issue) in the repository or project that owns it.</p>
@@ -31,7 +46,7 @@
 </ul>
 
 <h2>Page types and labels</h2>
-<p>Templates carry <code>#wiki</code> and <code>#wikiType</code>, which instances inherit, so <code>#wiki</code> finds every page. The promoted labels are set per page.</p>
+<p>Templates carry <code>#wiki</code>, <code>#wikiType</code> and <code>#color</code>, which instances inherit, so <code>#wiki</code> finds every page. The promoted labels are set per page.</p>
 <table>
   <thead><tr><th>Type</th><th>Template</th><th>Purpose</th><th>Labels and relations</th></tr></thead>
   <tbody>
@@ -43,10 +58,11 @@
 </table>
 <ul>
   <li><code>#wikiTopic</code>: short lowercase slug, the same as the hub's. One per topic the page belongs to (the label may repeat).</li>
-  <li><code>#wikiStatus</code>: <code>stub</code> (title only, to be written), <code>draft</code> (written by the assistant, not yet reviewed), <code>reviewed</code> (you read and accepted it). Only you set <code>reviewed</code>.</li>
+  <li><code>#wikiStatus</code>: <code>stub</code> (title only, to be written), <code>draft</code> (written by the assistant, not yet reviewed), <code>reviewed</code> (you read and accepted it). Only you set <code>reviewed</code>. A page with no status (for example one adopted from older notes) counts as not yet reviewed.</li>
   <li><code>#aiAssisted</code>: present on anything the assistant wrote or substantially edited.</li>
   <li><code>~wikiSource</code>: from a summary to its raw source note. This is how "sources not yet summarised" is computed, so it is mandatory on summaries.</li>
   <li><code>~relatesTo</code>: a typed edge for connections worth showing in the note map that the body text alone does not make clear. Prefer inline links; use the relation sparingly.</li>
+  <li><code>#color</code>: the node colour in the graph, one per page type: hub <code>#8b5cf6</code> (violet), summary <code>#3b82f6</code> (blue), concept <code>#22c55e</code> (green), entity <code>#f97316</code> (orange). Pages made from a template inherit it. A page adopted without a template owns <code>#wikiType</code> directly and needs the matching <code>#color</code> label too, or it shows grey.</li>
 </ul>
 
 <h2>Linking rules</h2>
@@ -64,10 +80,11 @@
   <li>Write for your future self: state the claim, then the evidence, then what is still unknown. Prefer concrete numbers and dates over adjectives.</li>
   <li>Record disagreements. When a new source contradicts an existing page, do not silently overwrite: add a "Contradictions" section naming both sources and the dates. If the contradiction means a document in a repository is wrong, the correction is an issue; the page names it.</li>
   <li>Keep the raw source untouched. Quote it; do not reformat it.</li>
+  <li>Read a page right before replacing it, and the schema right before changing it: other sessions may have written in the meantime, and Trilium keeps no revision of an ETAPI overwrite. Hold the write lock while you do (see <em>Write lock</em>).</li>
 </ul>
 
 <h2>Workflow: ingest</h2>
-<p>Trigger: "ingest", "process the sources", or a source added under <em>Sources</em>. Pending sources are the view <em>Sources not yet summarised</em>.</p>
+<p>Trigger: "ingest", "process the sources", or a source added under <em>Sources</em>. Pending sources are the view <em>Sources not yet summarised</em>. Take the write lock before step 1 and release it after the log entry.</p>
 <ol>
   <li>If the source sits directly under <em>Sources</em>, move it into its year folder (create the folder with <code>#wikiSourceGroup=&lt;year&gt;</code> if missing).</li>
   <li>Read the raw source in full (and its attachments if any).</li>
@@ -101,9 +118,11 @@
   <li><em>Sources not yet summarised</em>: offer to ingest them.</li>
   <li><em>Orphan pages</em>: pages nothing links to. Link them from the right hub or propose deleting them.</li>
   <li><em>Stubs</em>: pages with <code>#wikiStatus=stub</code>. Write the ones the existing summaries already support; list the rest as reading gaps.</li>
-  <li><em>Drafts awaiting review</em>: list them for the user; do not set <code>reviewed</code> yourself.</li>
+  <li><em>To review</em>: drafts and pages with no status. Give the user the count and the oldest few; do not set <code>reviewed</code> yourself.</li>
   <li>Read each hub and check for contradictions between pages, stale claims, concepts mentioned without a page, and missing cross-links. Fix the mechanical ones, report the rest.</li>
   <li>Work items found on pages (to-dos, "planned", "should we…?"): move each into an issue in the owning repository and leave at most the reference on the page.</li>
+  <li>Check colours: a <code>#wiki</code> page without a template and without <code>#color</code> gets the colour of its <code>#wikiType</code>.</li>
+  <li>Stale claims under <em>Locks</em>: delete them.</li>
   <li>Log it: each fix, each issue created, and each open item for the user.</li>
 </ol>
 
@@ -124,5 +143,20 @@
   &lt;/li&gt;
 &lt;/ul&gt;</code></pre>
 
+<h2>Graph</h2>
+<p>The wiki is viewed as a graph through Trilium note maps (note type <em>Note Map</em>, <code>#mapType=link</code>). Nodes are pages coloured by type (see <code>#color</code>), edges are inline links and relations. Tree edges (parent/child) are not drawn, so a page with no links floats alone: that is an orphan.</p>
+<ul>
+  <li><strong>Graph</strong> (<code>#mapRootNoteId</code> = <em>Wiki</em>): the whole wiki.</li>
+  <li><strong>Review graph</strong> (<code>#mapRootNoteId</code> = the view <em>To review</em>): only the pages still to review, with the links between them.</li>
+  <li>The <em>Note map</em> button in any page's ribbon shows that page's local neighbourhood.</li>
+  <li>To narrow a graph, make another note map whose <code>#mapRootNoteId</code> is a hub (one topic) or a saved search (any query, e.g. one <code>#wikiTopic</code>, or <code>#wikiType=entity</code>). <code>#excludeFromNoteMap</code> hides a note from all maps.</li>
+</ul>
+
 <h2>Human review</h2>
-<p>After every ingest, open the topic hub in Trilium's note map. Wrong edges, misfiled pages and bad topic slugs are cheapest to fix right then. Set <code>#wikiStatus=reviewed</code> on pages you have read and accept. The graph is the review step this system has instead of a compiler.</p>
+<p>The view <em>To review</em> is the review queue: every page that is a <code>draft</code> or has no status, newest change first. <em>Review graph</em> shows the same pages as a map.</p>
+<ol>
+  <li>After every ingest, open the topic hub's note map (or <em>Review graph</em>). Wrong edges, misfiled pages and bad topic slugs are cheapest to fix right then.</li>
+  <li>Read the page. If you accept it, set <code>#wikiStatus=reviewed</code>; it drops out of <em>To review</em> and the review graph.</li>
+  <li>If not, leave a note in the page or tell the assistant what to change; it stays <code>draft</code>.</li>
+</ol>
+<p>The graph is the review step this system has instead of a compiler.</p>

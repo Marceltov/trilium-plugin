@@ -28,6 +28,6 @@ Claude picks a skill automatically when your request matches it, so you just ask
 
 ## Knowledge base
 
-- **`trilium-llm-wiki`**: Maintains an LLM wiki inside Trilium Notes, after [Karpathy's LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): you collect raw sources, Claude compiles them into linked summary, concept, entity and hub pages, answers questions from them and lints the graph. The rules live in a schema note in your Trilium Notes instance (`#llmWikiSchema`), and `setup.py` in the skill directory creates the structure (templates, read-only sources, saved-search views).
+Building an LLM wiki (Karpathy's pattern: sources in, linked summary, concept, entity and hub pages out) is its own plugin now: [trilium-llm-wiki](https://trilium-llm-wiki.marceltov.de/). It can be installed next to this one and uses the same connection.
 
 The sources are in [`skills/`](https://github.com/Marceltov/trilium-plugin/tree/main/skills), one `SKILL.md` per skill.

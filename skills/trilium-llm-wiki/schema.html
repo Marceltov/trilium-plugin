@@ -12,6 +12,16 @@
   <li><strong>Log</strong>: the journal day note. Every ingest, query that produced a page, lint pass and other change to the wiki is recorded there (format below).</li>
 </ul>
 
+<h2>Knowledge here, work items in the issue tracker</h2>
+<p>The wiki records what is known: how things work, why they were decided, what went wrong and how it was fixed, accepted risks. It is <strong>not</strong> a task list. Anything that is work to do (build, fix, remove, migrate, correct a document, decide on a change) is tracked as an <strong>issue</strong> (for example a GitHub issue) in the repository or project that owns it.</p>
+<ul>
+  <li>When a session in or about a repository turns up a work item, the assistant creates the issue there (after checking for an existing one), not a wiki entry. If it cannot create it, it tells you what to file.</li>
+  <li>A page may mention an issue only as a reference next to the fact it concerns, for example "removal tracked in owner/repo#20". No lists of to-dos, no "planned", no "should we…?" on pages.</li>
+  <li>"Open questions" on a page are <strong>knowledge gaps</strong> only: things the wiki does not know yet and a source or a look at the system would answer. Once looked up, the answer replaces the question.</li>
+  <li>An accepted risk or a deliberate non-decision is a fact, written as one, not an open question.</li>
+  <li>When the assistant finds work items on existing pages, it moves them into issues and leaves at most the reference.</li>
+</ul>
+
 <h2>Sources layout</h2>
 <ul>
   <li>One folder per year directly under <em>Sources</em> (<code>Sources/2026</code>), marked <code>#wikiSourceGroup=&lt;year&gt;</code>.</li>
@@ -25,7 +35,7 @@
 <table>
   <thead><tr><th>Type</th><th>Template</th><th>Purpose</th><th>Labels and relations</th></tr></thead>
   <tbody>
-    <tr><td><code>hub</code></td><td>Wiki Topic Hub</td><td>Entry point of a topic: what it covers, a curated list of its key pages, open questions.</td><td><code>#wikiTopic</code>, <code>#wikiStatus</code></td></tr>
+    <tr><td><code>hub</code></td><td>Wiki Topic Hub</td><td>Entry point of a topic: what it covers, a curated list of its key pages, knowledge gaps (not work items, see above).</td><td><code>#wikiTopic</code>, <code>#wikiStatus</code></td></tr>
     <tr><td><code>summary</code></td><td>Wiki Source Summary</td><td>One page per ingested source: key claims, data, quotes, how it relates to existing pages.</td><td><code>~wikiSource</code> (the raw note), <code>#wikiTopic</code>, <code>#wikiStatus</code>, <code>#aiAssisted</code></td></tr>
     <tr><td><code>concept</code></td><td>Wiki Concept</td><td>An idea, method, pattern or question, synthesised across sources, with citations to the summaries.</td><td><code>#wikiTopic</code>, <code>#wikiStatus</code>, <code>#aiAssisted</code>, <code>~relatesTo</code></td></tr>
     <tr><td><code>entity</code></td><td>Wiki Entity</td><td>A person, organisation, product, tool, place or dataset.</td><td><code>#entityKind</code>, <code>#wikiTopic</code>, <code>#wikiStatus</code>, <code>#aiAssisted</code>, <code>~relatesTo</code></td></tr>
@@ -43,7 +53,7 @@
 <ul>
   <li>Link generously between pages inside the body text. An internal link is <code>&lt;a class="reference-link" href="#root/&lt;noteId&gt;"&gt;Title&lt;/a&gt;</code>. Links are the graph; Trilium's note map and backlinks panel render them.</li>
   <li>Cite claims by linking to the summary page of the source, not to the raw source.</li>
-  <li>When a concept or entity is mentioned that has no page yet, create a <strong>stub</strong> (from the template, <code>#wikiStatus=stub</code>, one sentence saying why it should exist) and link to it. Stubs are the to-do list.</li>
+  <li>When a concept or entity is mentioned that has no page yet, create a <strong>stub</strong> (from the template, <code>#wikiStatus=stub</code>, one sentence saying why it should exist) and link to it. Stubs are the wiki's writing backlog, the only to-do list that lives here.</li>
   <li>Never duplicate: before creating a page, search <code>#wiki</code> by title and by <code>#wikiTopic</code>. Extend the existing page instead.</li>
   <li>Every page must be reachable from a hub. New pages are linked from their hub's page list in the same ingest.</li>
 </ul>
@@ -51,8 +61,8 @@
 <h2>Writing rules</h2>
 <ul>
   <li>Bodies are HTML (Trilium text notes). Use headings, short paragraphs, lists and tables. No raw markdown.</li>
-  <li>Write for your future self: state the claim, then the evidence, then the open questions. Prefer concrete numbers and dates over adjectives.</li>
-  <li>Record disagreements. When a new source contradicts an existing page, do not silently overwrite: add a "Contradictions" section naming both sources and the dates.</li>
+  <li>Write for your future self: state the claim, then the evidence, then what is still unknown. Prefer concrete numbers and dates over adjectives.</li>
+  <li>Record disagreements. When a new source contradicts an existing page, do not silently overwrite: add a "Contradictions" section naming both sources and the dates. If the contradiction means a document in a repository is wrong, the correction is an issue; the page names it.</li>
   <li>Keep the raw source untouched. Quote it; do not reformat it.</li>
 </ul>
 
@@ -63,11 +73,19 @@
   <li>Read the raw source in full (and its attachments if any).</li>
   <li>Tell the user the three to five key takeaways and the topic(s) you would file it under. Wait for corrections if the user is present; otherwise continue.</li>
   <li>Find or create the topic hub. A new hub gets <code>#wikiTopic=&lt;slug&gt;</code> and <code>#wikiStatus=draft</code>.</li>
-  <li>Create a <strong>summary</strong> page from the template under the hub, with <code>~wikiSource</code> pointing at the raw note. Sections: Summary, Key claims, Data and quotes, Relevance, Open questions.</li>
+  <li>Create a <strong>summary</strong> page from the template under the hub, with <code>~wikiSource</code> pointing at the raw note. Sections: Summary, Key claims, Data and quotes, Relevance, Open questions (knowledge gaps only).</li>
   <li>Update every concept and entity page the source touches: add the new evidence with a link to the summary, note contradictions, create stubs for new concepts or entities. Expect 5 to 15 pages per source.</li>
   <li>Add the summary and any new pages to the hub's page list.</li>
   <li>Log it in today's journal note (format below): the summary, the hub, every page created or updated, the new stubs.</li>
   <li>Report: what was created, what was updated, which stubs now exist.</li>
+</ol>
+
+<h2>Workflow: adopt (from a work session)</h2>
+<p>Trigger: the user says a finding from a working session (debugging, a migration, a setup in a repository) belongs in the wiki.</p>
+<ol>
+  <li>Search for existing pages first, then write or extend concept and entity pages with what was learned: symptoms, cause, fix, how to recognise it next time, the decisions and their reasons.</li>
+  <li>Everything that is still to do goes into issues in the owning repositories before the pages are written; the pages reference the issue numbers where a fact needs it.</li>
+  <li>Log it with the action word <strong>adopt</strong>; list the pages, and the issues created.</li>
 </ol>
 
 <h2>Workflow: query</h2>
@@ -85,11 +103,12 @@
   <li><em>Stubs</em>: pages with <code>#wikiStatus=stub</code>. Write the ones the existing summaries already support; list the rest as reading gaps.</li>
   <li><em>Drafts awaiting review</em>: list them for the user; do not set <code>reviewed</code> yourself.</li>
   <li>Read each hub and check for contradictions between pages, stale claims, concepts mentioned without a page, and missing cross-links. Fix the mechanical ones, report the rest.</li>
-  <li>Log it: each fix, and each open item for the user.</li>
+  <li>Work items found on pages (to-dos, "planned", "should we…?"): move each into an issue in the owning repository and leave at most the reference on the page.</li>
+  <li>Log it: each fix, each issue created, and each open item for the user.</li>
 </ol>
 
 <h2>Log format</h2>
-<p>The day note has one <code>&lt;h2&gt;Wiki&lt;/h2&gt;</code> heading, created on the first wiki action of the day and kept below whatever else is in the note. Under it is one list. Every action is one list item: the action word in bold (<strong>ingest</strong>, <strong>query</strong>, <strong>lint</strong>, <strong>adopt</strong>, <strong>move</strong>, <strong>cleanup</strong>, <strong>schema</strong>), then what happened, with links to the pages. Details go in a nested list, for example the pages created, updated and stubbed. Later actions on the same day are appended to the same list.</p>
+<p>The day note has one <code>&lt;h2&gt;Wiki&lt;/h2&gt;</code> heading, created on the first wiki action of the day and kept below whatever else is in the note. Under it is one list. Every action is one list item: the action word in bold (<strong>ingest</strong>, <strong>query</strong>, <strong>lint</strong>, <strong>adopt</strong>, <strong>move</strong>, <strong>cleanup</strong>, <strong>schema</strong>), then what happened, with links to the pages. Details go in a nested list, for example the pages created, updated and stubbed, and the issues created. Later actions on the same day are appended to the same list. Read the day note right before writing it: other sessions may have appended in the meantime, and their entries must be kept.</p>
 <pre><code>&lt;h2&gt;Wiki&lt;/h2&gt;
 &lt;ul&gt;
   &lt;li&gt;&lt;strong&gt;ingest&lt;/strong&gt;: Source title → &lt;summary link&gt;
@@ -97,6 +116,7 @@
       &lt;li&gt;Created: &lt;links&gt;&lt;/li&gt;
       &lt;li&gt;Updated: &lt;links&gt;&lt;/li&gt;
       &lt;li&gt;Stubs: &lt;links&gt;&lt;/li&gt;
+      &lt;li&gt;Issues: owner/repo#n&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;strong&gt;lint&lt;/strong&gt;: 4 fixes, 2 open items

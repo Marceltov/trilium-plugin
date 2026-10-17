@@ -48,7 +48,7 @@ If more than one Trilium Notes instance is connected this session, resolve which
    a new page unlinked from its hub.
 
 5. **Report back** in the shape the schema asks for: created pages, updated pages, new stubs,
-   open questions for the user. Link noteIds so the user can jump to them.
+   issues created, open questions for the user. Link noteIds so the user can jump to them.
 
 ## Bootstrap (no schema note found)
 

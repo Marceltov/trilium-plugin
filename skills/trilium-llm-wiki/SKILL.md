@@ -40,6 +40,7 @@ If more than one Trilium Notes instance is connected this session, resolve which
    | Pending sources | run the view's query: `getNoteById(view)` → `searchString` label → `searchNotes(query)` |
    | File a loose source | a note directly under *Sources* → move it into `Sources/<year>` (`#wikiSourceGroup=<year>`, create if missing); see `trilium-move-note` |
    | Read a source | `getNoteContent`, `getNoteAttachments` + `getAttachmentContent` |
+   | Collect a link-only source | raw fetch (`curl` from a shell; without one, the web-fetch tool and `#fetchedVia=summary`) → `createNote` *Fetched copy* under the link note → `postAttribute` `sourceUrl`, `fetchedOn`, `fetchedVia`, `aiAssisted` |
    | Find existing pages | `searchNotes("#wiki #wikiTopic=<slug>")`, `searchNotes("#wiki <title words>")` |
    | Create a page | `createNote` (type `text`, under the hub) then `postAttribute` relation `template` → template id, then the promoted labels (`wikiTopic`, `wikiStatus`, `aiAssisted`) and, for summaries, relation `wikiSource` → the raw note. Same mechanics as `trilium-create-note-from-template`. |
    | Write / extend a page | `getNoteContent` → edit the HTML → `putNoteContentById`. Never replace a page you did not read first. |
@@ -48,7 +49,8 @@ If more than one Trilium Notes instance is connected this session, resolve which
    | Log | `getDayNote(today)` → `getNoteContent` → add an `<li>` to the list under `<h2>Wiki</h2>` (create the heading on the first action of the day) → `putNoteContentById` (see `trilium-journal-note` and the schema's *Log format*) |
 
 5. **Respect the boundaries in the schema:** never edit anything under *Sources* (it is
-   `#readOnly`; ETAPI would still allow it, so this is on you), never set `#wikiStatus=reviewed`
+   `#readOnly`; ETAPI would still allow it, so this is on you) beyond adding the *Fetched copy* of a
+   link-only source, never set `#wikiStatus=reviewed`
    yourself, never create a page without first searching for an existing one, and never leave
    a new page unlinked from its hub.
 

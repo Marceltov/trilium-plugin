@@ -15,7 +15,3 @@ Claude.ai signs in with OAuth, so the server needs `MCP_BASE_URL` and `MCP_OAUTH
 In a chat, type `/` to see the skills, for example `/trilium-search-notes`, or just ask and let Claude pick the right one. New versions arrive through the repository; there is nothing to re-upload.
 
 The plugin's setup hook only runs in Claude Code and Cowork; in chat it is shown greyed out and does nothing. `trilium-manage-instances` notices the connector and explains how to add one if it's missing.
-
-## What's different from Claude Code
-
-- **No shell in chat.** `trilium-llm-wiki` creates its structure through the MCP tools instead of running `setup.py`.

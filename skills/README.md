@@ -21,7 +21,6 @@ skills/
 - **`trilium-create-note-from-template`** — creates a new note from an existing template note (`~template` relation) and prompts for the template's promoted-attribute values.
 - **`trilium-apply-template-to-note`** — retroactively attaches an existing note to a template. Mutates the target note's content and children, so it confirms with the user before writing.
 - **`trilium-find-template-instances`** — searches for notes derived from a given template, optionally filtered by promoted-attribute values.
-- **`trilium-llm-wiki`** — maintains an LLM wiki inside Trilium Notes (Karpathy's LLM-wiki pattern): ingests raw sources into linked summary, concept, entity and hub pages, answers questions from them and lints the graph, following a schema note tagged `#llmWikiSchema`. `setup.py` in the skill directory bootstraps the structure.
 
 See the [Claude Code plugin docs](https://code.claude.com/docs/en/plugins) for the `SKILL.md` format, or the `superpowers:writing-skills` skill for a guided walkthrough.
 

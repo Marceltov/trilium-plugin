@@ -5,14 +5,17 @@ Creates (idempotently, found again by label on re-runs):
 
     LLM Wiki                      #llmWiki
     ├── Schema                    #llmWikiSchema          (content: schema.html)
+    ├── Locks                     #llmWikiPart=locks  #excludeFromNoteMap(inheritable)  (write-lock claims)
+    ├── Graph                     #llmWikiMap=graph   note map of Wiki
+    ├── Review graph              #llmWikiMap=review  note map of the "To review" view
     ├── Wiki                      #llmWikiPart=wiki
     ├── Sources                   #llmWikiPart=sources  #readOnly(inheritable) #wikiSource(inheritable)
     │   └── <current year>        #wikiSourceGroup=<year>  (each direct child is one source)
     ├── Templates                 #llmWikiPart=templates
-    │   ├── Wiki Topic Hub        #template #wiki #wikiType=hub     + promoted-attribute definitions
-    │   ├── Wiki Source Summary   #template #wiki #wikiType=summary + promoted-attribute definitions
-    │   ├── Wiki Concept          #template #wiki #wikiType=concept + promoted-attribute definitions
-    │   └── Wiki Entity           #template #wiki #wikiType=entity  + promoted-attribute definitions
+    │   ├── Wiki Topic Hub        #template #wiki #wikiType=hub     #color + promoted-attribute definitions
+    │   ├── Wiki Source Summary   #template #wiki #wikiType=summary #color + promoted-attribute definitions
+    │   ├── Wiki Concept          #template #wiki #wikiType=concept #color + promoted-attribute definitions
+    │   └── Wiki Entity           #template #wiki #wikiType=entity  #color + promoted-attribute definitions
     └── Views                     #llmWikiPart=views
         └── saved searches (type=search, #searchString=...)
 
@@ -53,6 +56,7 @@ TEMPLATES = [
         "title": "Wiki Topic Hub",
         "wikiType": "hub",
         "icon": "bx bx-sitemap",
+        "color": "#8b5cf6",
         "promoted": [
             ("label", "wikiTopic", "promoted,single,text"),
             ("label", "wikiStatus", "promoted,single,text"),
@@ -67,6 +71,7 @@ TEMPLATES = [
         "title": "Wiki Source Summary",
         "wikiType": "summary",
         "icon": "bx bx-file-find",
+        "color": "#3b82f6",
         "promoted": COMMON_PROMOTED + [("relation", "wikiSource", "promoted,single")],
         "content": (
             "<h2>Summary</h2><p></p>"
@@ -80,6 +85,7 @@ TEMPLATES = [
         "title": "Wiki Concept",
         "wikiType": "concept",
         "icon": "bx bx-bulb",
+        "color": "#22c55e",
         "promoted": COMMON_PROMOTED + [("relation", "relatesTo", "promoted,multiple")],
         "content": (
             "<h2>Definition</h2><p></p>"
@@ -92,6 +98,7 @@ TEMPLATES = [
         "title": "Wiki Entity",
         "wikiType": "entity",
         "icon": "bx bx-id-card",
+        "color": "#f97316",
         "promoted": COMMON_PROMOTED
         + [
             ("label", "entityKind", "promoted,single,text"),
@@ -109,6 +116,8 @@ TEMPLATES = [
 # parser treats an unquoted hyphenated label value as several tokens. Templates own
 # #wiki/#wikiType themselves, so #!template keeps them out of the page views.
 VIEWS = [
+    # Drafts plus pages without any status (adopted from older notes): everything not yet reviewed.
+    ("review", "To review", "#wiki #!template (#wikiStatus = draft or #!wikiStatus) orderBy note.dateModified desc"),
     # Only direct children of Sources or of a year folder count as sources; everything
     # below them inherits #wikiSource too but belongs to that one source.
     ("sourcesPending", "Sources not yet summarised",
@@ -176,6 +185,9 @@ class Etapi:
             {"noteId": note, "type": type_, "name": name, "value": value, "isInheritable": inheritable},
         )
 
+    def patch_note(self, note: str, body: dict):
+        return self._write("PATCH", f"/notes/{note}", body)
+
     def patch_attr(self, attribute_id: str, value: str):
         return self._write("PATCH", f"/attributes/{attribute_id}", {"value": value})
 
@@ -190,7 +202,7 @@ class Etapi:
 
 
 # Labels a note carries once; a changed declaration updates them in place.
-SINGLE_VALUED = {"searchString", "iconClass"}
+SINGLE_VALUED = {"searchString", "iconClass", "color", "mapType", "mapRootNoteId"}
 
 
 def own_attrs(note: dict) -> set[tuple[str, str, str]]:
@@ -270,7 +282,11 @@ def main() -> None:
         api.put_content(schema, schema_html)
         print("    ~ schema content updated")
 
-    ensure_note(api, root, "Wiki", ("llmWikiPart", "wiki"),
+    ensure_note(api, root, "Locks", ("llmWikiPart", "locks"),
+                content="<p>Write lock: one claim note per session that is writing. See the schema, "
+                        "section <em>Write lock</em>.</p>",
+                extra_attrs=[("label", "iconClass", "bx bx-lock"), ("label", "excludeFromNoteMap", "", True)])
+    wiki, _ = ensure_note(api, root, "Wiki", ("llmWikiPart", "wiki"),
                 content="<p>Pages the assistant writes. One child per topic hub.</p>",
                 extra_attrs=[("label", "iconClass", "bx bx-network-chart")])
     sources, _ = ensure_note(api, root, "Sources", ("llmWikiPart", "sources"),
@@ -297,15 +313,29 @@ def main() -> None:
             ("label", "wiki", ""),
             ("label", "wikiType", t["wikiType"]),
             ("label", "iconClass", t["icon"]),
+            # Node colour in the note map, inherited by instances like #wikiType.
+            ("label", "color", t["color"]),
         ]
         # Promoted definitions are *label* attributes named "label:x" / "relation:x".
         attrs += [("label", f"{kind}:{name}", definition) for kind, name, definition in t["promoted"]]
         ensure_note(api, templates, t["title"], ("llmWikiTemplate", t["wikiType"]), content=t["content"], extra_attrs=attrs)
 
     print("Views")
+    view_ids = {}
     for slug, title, query in VIEWS:
-        ensure_note(api, views, title, ("llmWikiView", slug), type_="search",
-                    extra_attrs=[("label", "searchString", query)])
+        view_ids[slug], _ = ensure_note(api, views, title, ("llmWikiView", slug), type_="search",
+                                        extra_attrs=[("label", "searchString", query)])
+
+    print("Graphs")
+    # The ETAPI spec lists noteMap only for PATCH, not create-note: create a text note, then patch the type.
+    for slug, title, map_root, icon in [("graph", "Graph", wiki, "bx bx-network-chart"),
+                                        ("review", "Review graph", view_ids["review"], "bx bx-check-shield")]:
+        note_id, created = ensure_note(api, root, title, ("llmWikiMap", slug),
+                                       extra_attrs=[("label", "mapType", "link"),
+                                                    ("label", "mapRootNoteId", map_root),
+                                                    ("label", "iconClass", icon)])
+        if created:
+            api.patch_note(note_id, {"type": "noteMap", "mime": ""})
 
     print("Done." if not args.dry_run else "Dry run complete; nothing written.")
 

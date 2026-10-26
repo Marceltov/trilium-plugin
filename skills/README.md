@@ -17,14 +17,14 @@ skills/
 - **`trilium-search-notes`** — general-purpose note search by title, content, or attributes.
 - **`trilium-manage-note-attributes`** — add, update, or remove labels and relations on a note.
 - **`trilium-journal-note`** — get or append to the day/week/month/year journal note for a date.
-- **`trilium-export-note-subtree`** — export a note and its subtree as readable markdown or HTML.
+- **`trilium-export-note-subtree`** — export a note and its subtree as one readable Markdown document.
 - **`trilium-create-note-from-template`** — creates a new note from an existing template note (`~template` relation) and prompts for the template's promoted-attribute values.
 - **`trilium-apply-template-to-note`** — retroactively attaches an existing note to a template. Mutates the target note's content and children, so it confirms with the user before writing.
 - **`trilium-find-template-instances`** — searches for notes derived from a given template, optionally filtered by promoted-attribute values.
 
 See the [Claude Code plugin docs](https://code.claude.com/docs/en/plugins) for the `SKILL.md` format, or the `superpowers:writing-skills` skill for a guided walkthrough.
 
-Skills here should call the MCP tools exposed by [Trilium Notes MCP server](https://github.com/Marceltov/trilium-mcp) (`createNote`, `searchNotes`, `getNoteById`, `exportNoteSubtree`, …) rather than talking to the Trilium Notes ETAPI directly.
+Skills here should call the tools of Trilium Notes' built-in MCP server (`create_note`, `search_notes`, `get_note`, `set_attribute`, …), directly or through trilium-mcp-proxy, rather than talking to the Trilium Notes ETAPI directly. Text notes go in and come out as Markdown.
 
 ## Writing skills here
 

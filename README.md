@@ -1,8 +1,8 @@
 <h1 align="center"><a href="https://github.com/Marceltov/trilium-plugin">trilium-plugin</a></h1>
 
 <p align="center">
-  <a href="https://github.com/Marceltov/trilium-mcp">
-    <img alt="requires trilium-mcp sidecar" src="https://img.shields.io/badge/requires-trilium--mcp_sidecar_running-critical">
+  <a href="https://github.com/Marceltov/trilium-mcp-proxy">
+    <img alt="requires Trilium Notes 0.106+ MCP server" src="https://img.shields.io/badge/requires-Trilium_Notes_0.106%2B_MCP_server-critical">
   </a>
   <a href="https://trilium-plugin.marceltov.de/">
     <img alt="Documentation" src="https://img.shields.io/badge/docs-trilium--plugin.marceltov.de-2f7a27">
@@ -12,30 +12,15 @@
   </a>
 </p>
 
-> [!WARNING]
-> **This plugin is archived and no longer maintained.** Its skills call the tools of
-> [trilium-mcp](https://github.com/Marceltov/trilium-mcp), which is archived too: Trilium Notes 0.106+
-> ships its own MCP server at `/mcp` (*Options → AI / LLM → MCP server*), and its tools cover the same
-> ground without extra skills.
->
-> Connect Claude Code to it directly with an ETAPI token from *Options → ETAPI*:
->
-> ```bash
-> claude mcp add --transport http trilium https://trilium.example.com/mcp \
->   --header "Authorization: Bearer <token>"
-> ```
->
-> Or, for convenience, put [trilium-mcp-proxy](https://github.com/Marceltov/trilium-mcp-proxy) in front
-> of it and log in once with your Trilium password instead of handling a token. The proxy runs on your
-> own server and its login page is its own, so the password goes only to that page and on to your
-> Trilium; it is never stored, and the MCP client never sees it.
->
-> The rest of this README describes the plugin as it was at its last release.
-
-A [Claude Code](https://code.claude.com) plugin for [Trilium Notes](https://triliumnotes.org): skills for working with your notes, plus the MCP connection to a running [Trilium Notes MCP server](https://github.com/Marceltov/trilium-mcp).
+A [Claude Code](https://code.claude.com) plugin for [Trilium Notes](https://triliumnotes.org): skills for working with your notes, plus the MCP connection to Trilium Notes' built-in MCP server.
 
 > [!IMPORTANT]  
-> This plugin does **not** run, host, or bundle the MCP server. It's a thin client: it only works if you already have a [Trilium Notes MCP server](https://github.com/Marceltov/trilium-mcp) deployed and reachable as a **container sidecar** next to your Trilium Notes instance (see its [quick start](https://trilium-mcp.marceltov.de/getting-started/)). Installing this plugin alone gets you nothing — without a running `trilium-mcp` sidecar and valid credentials, every tool call fails.
+> This plugin uses the MCP server built into Trilium Notes 0.106+ (*Options → AI / LLM → MCP server*). Connect to it either:
+> 
+> - **through [trilium-mcp-proxy](https://github.com/Marceltov/trilium-mcp-proxy)** (recommended): you sign in once with your Trilium Notes password, no token to create or paste. The proxy runs on your own server, so the password never leaves it; or
+> - **directly**, with an ETAPI token from *Options → ETAPI*.
+>
+> The plugin sets up the connection but runs neither. Without Trilium's MCP server switched on and reachable, every tool call fails.
 
 **Full documentation: [trilium-plugin.marceltov.de](https://trilium-plugin.marceltov.de/)**
 
@@ -58,11 +43,11 @@ On Claude Code before 2.1.275, add the marketplace first:
 
 Then start a new session: Claude offers to connect your Trilium Notes instance if none is configured.
 
-**On claude.ai?** Connect the Trilium Notes MCP server as a connector, then add this repository under *Customize → Plugins → Add → Add marketplace* and add `trilium`. See [Use on claude.ai](https://trilium-plugin.marceltov.de/claude-ai/).
+**On claude.ai?** Connect Trilium Notes through trilium-mcp-proxy as a connector, then add this repository under *Customize → Plugins → Add → Add marketplace* and add `trilium`. See [Use on claude.ai](https://trilium-plugin.marceltov.de/claude-ai/).
 
 ## Related project
 
-This plugin is the **client half**: skills that call MCP tools. The [Trilium Notes MCP server](https://github.com/Marceltov/trilium-mcp) is the **server half** — the container sidecar that exposes Trilium Notes' ETAPI as those MCP tools in the first place. You need both: deploy `trilium-mcp` next to your Trilium Notes instance, then install this plugin to get skills that use it.
+This plugin is the **client half**: skills that know Trilium Notes' concepts (templates, promoted attributes, journal notes, clones) and call the tools of Trilium's built-in MCP server. [trilium-mcp-proxy](https://github.com/Marceltov/trilium-mcp-proxy) adds the password login in front of that server. Earlier versions used [trilium-mcp](https://github.com/Marceltov/trilium-mcp), which is archived now that Trilium has its own server.
 
 ## License
 

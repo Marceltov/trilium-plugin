@@ -1,6 +1,6 @@
 {
   "name": "trilium",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Claude Code plugin for Trilium Notes: skills plus the MCP connection to a running Trilium Notes MCP server.",
   "author": {
     "name": "Marcel Bruckner"

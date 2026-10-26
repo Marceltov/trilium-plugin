@@ -1,6 +1,6 @@
 # Skills
 
-Claude picks a skill automatically when your request matches it, so you just ask in plain words ("move my meeting notes under Projects"). Each skill calls the [Trilium Notes MCP server](https://trilium-mcp.marceltov.de/) tools rather than the ETAPI directly.
+Claude picks a skill automatically when your request matches it, so you just ask in plain words ("move my meeting notes under Projects"). Each skill calls the tools of Trilium Notes' built-in MCP server rather than the ETAPI directly.
 
 ## Connection
 
@@ -18,7 +18,7 @@ Claude picks a skill automatically when your request matches it, so you just ask
 ## Journal and export
 
 - **`trilium-journal-note`**: Get or append to the day/week/month/year journal note for a date.
-- **`trilium-export-note-subtree`**: Export a note and its subtree as readable markdown or HTML.
+- **`trilium-export-note-subtree`**: Export a note and its subtree as one readable Markdown document.
 
 ## Templates
 

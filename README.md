@@ -12,6 +12,26 @@
   </a>
 </p>
 
+> [!WARNING]
+> **This plugin is archived and no longer maintained.** Its skills call the tools of
+> [trilium-mcp](https://github.com/Marceltov/trilium-mcp), which is archived too: Trilium Notes 0.106+
+> ships its own MCP server at `/mcp` (*Options → AI / LLM → MCP server*), and its tools cover the same
+> ground without extra skills.
+>
+> Connect Claude Code to it directly with an ETAPI token from *Options → ETAPI*:
+>
+> ```bash
+> claude mcp add --transport http trilium https://trilium.example.com/mcp \
+>   --header "Authorization: Bearer <token>"
+> ```
+>
+> Or, for convenience, put [trilium-mcp-proxy](https://github.com/Marceltov/trilium-mcp-proxy) in front
+> of it and log in once with your Trilium password instead of handling a token. The proxy runs on your
+> own server and its login page is its own, so the password goes only to that page and on to your
+> Trilium; it is never stored, and the MCP client never sees it.
+>
+> The rest of this README describes the plugin as it was at its last release.
+
 A [Claude Code](https://code.claude.com) plugin for [Trilium Notes](https://triliumnotes.org): skills for working with your notes, plus the MCP connection to a running [Trilium Notes MCP server](https://github.com/Marceltov/trilium-mcp).
 
 > [!IMPORTANT]  

@@ -1,6 +1,6 @@
 ---
 name: trilium-manage-instances
-description: Configure connections to one or more Trilium Notes instances' MCP servers (Trilium's built-in `/mcp`, directly with an ETAPI token or through trilium-mcp-proxy with OAuth) — add a new instance (URL, signed in with OAuth or an ETAPI token; optionally labeled), list which are configured/connected, or remove one. Every instance is registered as a user-scoped MCP server via `claude mcp add` (no settings.json editing, no bundled .mcp.json). Use when the trilium MCP server is unconfigured, disconnected, or missing credentials (including when a SessionStart hook flags this), when the user asks to set up, configure, or connect the Trilium Notes plugin, or when they want to add, remove, or list additional Trilium Notes instances.
+description: Configure connections to one or more Trilium Notes instances' MCP servers (Trilium's built-in `/mcp`, directly with an ETAPI token or through mcp-login-proxy with OAuth) — add a new instance (URL, signed in with OAuth or an ETAPI token; optionally labeled), list which are configured/connected, or remove one. Every instance is registered as a user-scoped MCP server via `claude mcp add` (no settings.json editing, no bundled .mcp.json). Use when the trilium MCP server is unconfigured, disconnected, or missing credentials (including when a SessionStart hook flags this), when the user asks to set up, configure, or connect the Trilium Notes plugin, or when they want to add, remove, or list additional Trilium Notes instances.
 ---
 
 # Manage Trilium Notes Instances
@@ -13,7 +13,7 @@ Every Trilium Notes instance — including the first/default one — is its own 
 
 There is no `claude` CLI there; Trilium Notes is connected as a **custom connector** instead. If Trilium Notes tools are already available, say so and stop. Otherwise explain the steps:
 
-1. Trilium's MCP server is on (*Options → AI / LLM → MCP server*), with [trilium-mcp-proxy](https://github.com/Marceltov/trilium-mcp-proxy) in front of it at a public HTTPS URL. Connectors sign in with OAuth, which the proxy adds.
+1. Trilium's MCP server is on (*Options → AI / LLM → MCP server*), with [mcp-login-proxy](https://github.com/Marceltov/mcp-login-proxy) in front of it at a public HTTPS URL. Connectors sign in with OAuth, which the proxy adds.
 2. *Customize → Connectors → Add custom connector*: a name (for example `Trilium Notes`) and the proxy's URL ending in `/mcp`, keep the detected OAuth choices, then sign in with the Trilium Notes password on the proxy's login page. The password goes only to the proxy, on the user's own server, and on to Trilium; claude.ai never sees it.
 3. Switch the connector on in the chat (**+ → Connectors**).
 
@@ -36,7 +36,7 @@ Figure out from the request whether the user wants to **add** a new instance, **
    Skip this step entirely for the first/default instance — it always stays unlabeled (server name `trilium`).
 
 3. **Ask for the remaining values**, one at a time (plain question or `AskUserQuestion` if available):
-   - How to connect: through [trilium-mcp-proxy](https://github.com/Marceltov/trilium-mcp-proxy) (OAuth, the user logs in with the Trilium Notes password; the default when they run one) or straight to Trilium's built-in server with an ETAPI token.
+   - How to connect: through [mcp-login-proxy](https://github.com/Marceltov/mcp-login-proxy) (OAuth, the user logs in with the Trilium Notes password; the default when they run one) or straight to Trilium's built-in server with an ETAPI token.
    - The MCP URL, ending in `/mcp`: the proxy's URL, or the Trilium Notes URL itself (Trilium shows it under *Options → AI / LLM → MCP server*). There's no default — ask.
    - Only for the direct route: an ETAPI token from that Trilium Notes instance's *Options → ETAPI* screen. Never print the token back or log it.
 

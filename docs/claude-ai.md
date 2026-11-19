@@ -4,7 +4,7 @@ The Trilium Notes plugin works on claude.ai too, in chat on the web, in the Clau
 
 ## 1. Connect Trilium Notes as a connector
 
-Connectors sign in with OAuth, which [trilium-mcp-proxy](https://trilium-mcp-proxy.marceltov.de/) adds in front of Trilium's built-in MCP server. With the proxy running at a public HTTPS URL: *Customize → Connectors → Add custom connector*, enter the proxy's URL ending in `/mcp`, and sign in with your Trilium Notes password on the proxy's login page. See [Connect a client](https://trilium-mcp-proxy.marceltov.de/connecting/) in the proxy docs.
+Connectors sign in with OAuth, which [mcp-login-proxy](https://mcp-login-proxy.marceltov.de/) adds in front of Trilium's built-in MCP server. With the proxy running at a public HTTPS URL: *Customize → Connectors → Add custom connector*, enter the proxy's URL ending in `/mcp`, and sign in with your Trilium Notes password on the proxy's login page. See [Connect a client](https://mcp-login-proxy.marceltov.de/connecting/) in the proxy docs.
 
 ## 2. Add the plugin
 

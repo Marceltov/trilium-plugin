@@ -20,12 +20,12 @@ hide:
 
 !!! warning "Needs Trilium Notes' MCP server"
 
-    This plugin is only the client half. It uses the MCP server built into Trilium Notes 0.106+ (*Options → AI / LLM → MCP server*), connected through [trilium-mcp-proxy](https://trilium-mcp-proxy.marceltov.de/) to sign in with your password, or directly with an ETAPI token. See [Install and connect](install.md).
+    This plugin is only the client half. It uses the MCP server built into Trilium Notes 0.106+ (*Options → AI / LLM → MCP server*), connected through [mcp-login-proxy](https://mcp-login-proxy.marceltov.de/) to sign in with your password, or directly with an ETAPI token. See [Install and connect](install.md).
 
 ## What it does
 
 - **Sets up the connection.** If no Trilium Notes instance is configured, a `SessionStart` hook notices in your first session and Claude offers, once, to register one: it asks for the URL, runs `claude mcp add` for you, and you sign in with your Trilium Notes password through `/mcp`.
 - **Knows Trilium Notes' features.** Skills cover templates, promoted attributes, journal notes and subtree export, so Claude uses the right MCP tools instead of guessing.
-- **Works on claude.ai too.** Add this repository as a plugin marketplace on claude.ai, next to a Trilium Notes connector (through trilium-mcp-proxy). See [Use on claude.ai](claude-ai.md).
+- **Works on claude.ai too.** Add this repository as a plugin marketplace on claude.ai, next to a Trilium Notes connector (through mcp-login-proxy). See [Use on claude.ai](claude-ai.md).
 - **Handles several instances.** Connect a home and a work Trilium Notes instance side by side; skills ask which one you mean when it isn't clear. See [Multiple instances](multiple-instances.md).
 - **Asks before destructive changes.** Deleting a note or applying a template to an existing one is confirmed with you first.

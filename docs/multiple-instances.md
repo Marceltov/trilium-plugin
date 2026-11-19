@@ -1,6 +1,6 @@
 # Multiple instances
 
-You can connect more than one Trilium Notes instance, for example a home and a work instance. Each has its own MCP URL (its own trilium-mcp-proxy, or its own Trilium Notes URL with `/mcp`) and is registered under its own name:
+You can connect more than one Trilium Notes instance, for example a home and a work instance. Each has its own MCP URL (its own mcp-login-proxy, or its own Trilium Notes URL with `/mcp`) and is registered under its own name:
 
 | Instance | MCP server name | Tool prefix |
 | -------- | --------------- | ----------- |

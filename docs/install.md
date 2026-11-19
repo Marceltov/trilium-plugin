@@ -4,10 +4,10 @@
 
 This plugin uses the MCP server built into Trilium Notes 0.106+ (*Options → AI / LLM → MCP server*). Connect to it either:
 
-- **through [trilium-mcp-proxy](https://github.com/Marceltov/trilium-mcp-proxy)** (recommended): you sign in once with your Trilium Notes password, no token to create or paste. The proxy runs on your own server, so the password never leaves it; or
+- **through [mcp-login-proxy](https://github.com/Marceltov/mcp-login-proxy)** (recommended): you sign in once with your Trilium Notes password, no token to create or paste. The proxy runs on your own server, so the password never leaves it; or
 - **directly**, with an ETAPI token from *Options → ETAPI*.
 
-For the proxy, follow its [quick start](https://trilium-mcp-proxy.marceltov.de/getting-started/).
+For the proxy, follow its [quick start](https://mcp-login-proxy.marceltov.de/getting-started/) with its [Trilium example config](https://github.com/Marceltov/mcp-login-proxy/blob/main/docs/examples/trilium.yaml).
 
 ## 2. Install the plugin
 

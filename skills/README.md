@@ -24,7 +24,7 @@ skills/
 
 See the [Claude Code plugin docs](https://code.claude.com/docs/en/plugins) for the `SKILL.md` format, or the `superpowers:writing-skills` skill for a guided walkthrough.
 
-Skills here should call the tools of Trilium Notes' built-in MCP server (`create_note`, `search_notes`, `get_note`, `set_attribute`, …), directly or through trilium-mcp-proxy, rather than talking to the Trilium Notes ETAPI directly. Text notes go in and come out as Markdown.
+Skills here should call the tools of Trilium Notes' built-in MCP server (`create_note`, `search_notes`, `get_note`, `set_attribute`, …), directly or through mcp-login-proxy, rather than talking to the Trilium Notes ETAPI directly. Text notes go in and come out as Markdown.
 
 ## Writing skills here
 
